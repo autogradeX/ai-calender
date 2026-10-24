@@ -3,7 +3,7 @@
   "region": { "hi": "छत्तीसगढ़ (मैदानी क्षेत्र)", "en": "Chhattisgarh (plains)" },
   "months": {
     "1": {
-      "featured": { "emoji": "🥬", "hi": "पत्तागोभी", "en": "Cabbage" },
+      "featured": { "emoji": "🥬", "hi": "पत्तागोभी", "en": "Cabbage" }, 
       "fruit": [
         { "hi": "आम में मिलीबग रोकने के लिए तने पर 30 सेमी चौड़ी पॉलीथीन/ग्रीस की पट्टी बांधें।", "en": "Tie a 30 cm polythene/grease band round mango trunks to stop mealybugs climbing." },
         { "hi": "पाले से बचाव के लिए नए पौधों को पुआल से ढकें और शाम को हल्की सिंचाई करें।", "en": "Cover young plants with straw and give a light evening irrigation to protect against frost." }
