@@ -173,7 +173,13 @@ a { color: var(--primary); }
   background: rgb(255 255 255 / .9);
   border-radius: 50%;
 }
-.featured-label { font-weight: 600; font-size: 14px; }
+.featured { font: inherit; color: inherit; cursor: pointer; text-align: left; transition: background .15s; }
+.featured:hover { background: rgb(255 255 255 / .26); }
+.featured-label { display: flex; flex-direction: column; line-height: 1.25; }
+.featured-label small { font-size: 12px; opacity: .9; }
+.featured-label strong { font-size: 17px; }
+.featured-emoji { animation: pop .25s ease-out; }
+@keyframes pop { from { transform: scale(.6); } }
 .month-head { text-align: right; }
 .month-head h1 { font-size: 40px; line-height: 1.1; }
 .hindu-months { font-size: 15px; opacity: .92; }

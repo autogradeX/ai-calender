@@ -92,7 +92,7 @@ The farm knowledge lives in plain JSON under `knowledge/` so university staff ca
   - **Holidays are a starter list.** October's entries are copied from the printed calendar; other months only have major holidays. Complete it from the official list.
   - **Hindu month names** are calculated and should be checked against the printed calendar.
   - **Podcast/QR links** all point to https://mguvv.ac.in/info/ for now. Replace them with the exact targets of the six QR codes.
-- `knowledge/advisory.json`: month-by-month work for each category for the Chhattisgarh plains. This is general starter advice; MGUVV scientists should review it and add varieties, doses and local timings.
+- `knowledge/advisory.json`: month-by-month work for each category for the Chhattisgarh plains. Each month also has a `featured` crop per category (and a scheme id for सरकारी योजनाएं), shown on the banner for the selected category. This is general starter advice; MGUVV scientists should review it and add varieties, doses and local timings.
 - `knowledge/schemes.json`: scheme names, short benefits and official portals.
 
 The assistant receives this month's and next month's advice, upcoming holidays and the scheme list with every request, so edits there flow into its answers.

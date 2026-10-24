@@ -3,7 +3,14 @@
   "region": { "hi": "छत्तीसगढ़ (मैदानी क्षेत्र)", "en": "Chhattisgarh (plains)" },
   "months": {
     "1": {
-      "featured": { "emoji": "🥬", "hi": "पत्तागोभी", "en": "Cabbage" }, 
+      "featured": {
+        "fruit": { "emoji": "🍏", "hi": "अमरूद", "en": "Guava" },
+        "flower": { "emoji": "🌼", "hi": "गेंदा", "en": "Marigold" },
+        "vegetable": { "emoji": "🥬", "hi": "पत्तागोभी", "en": "Cabbage" },
+        "spice": { "emoji": "🧄", "hi": "लहसुन", "en": "Garlic" },
+        "forestry": { "emoji": "🌳", "hi": "सागौन", "en": "Teak" },
+        "scheme": { "scheme": "soilhealth" }
+      },
       "fruit": [
         { "hi": "आम में मिलीबग रोकने के लिए तने पर 30 सेमी चौड़ी पॉलीथीन/ग्रीस की पट्टी बांधें।", "en": "Tie a 30 cm polythene/grease band round mango trunks to stop mealybugs climbing." },
         { "hi": "पाले से बचाव के लिए नए पौधों को पुआल से ढकें और शाम को हल्की सिंचाई करें।", "en": "Cover young plants with straw and give a light evening irrigation to protect against frost." }
@@ -23,7 +30,14 @@
       ]
     },
     "2": {
-      "featured": { "emoji": "🥭", "hi": "आम का बौर", "en": "Mango blossom" },
+      "featured": {
+        "fruit": { "emoji": "🥭", "hi": "आम का बौर", "en": "Mango blossom" },
+        "flower": { "emoji": "🌻", "hi": "सूरजमुखी", "en": "Sunflower" },
+        "vegetable": { "emoji": "🥒", "hi": "खीरा", "en": "Cucumber" },
+        "spice": { "emoji": "🌿", "hi": "धनिया", "en": "Coriander" },
+        "forestry": { "emoji": "🌳", "hi": "शीशम", "en": "Shisham" },
+        "scheme": { "scheme": "kcc" }
+      },
       "fruit": [
         { "hi": "आम में बौर आने पर भुनगा (हॉपर) और खर्रा रोग की निगरानी करें; फूल आने के समय सिंचाई न करें।", "en": "Watch flowering mango for hoppers and powdery mildew; do not irrigate during bloom." },
         { "hi": "नींबू वर्गीय पौधों में खाद दें और पपीता-केला में सिंचाई करें।", "en": "Feed citrus plants and irrigate papaya and banana." }
@@ -42,7 +56,14 @@
       ]
     },
     "3": {
-      "featured": { "emoji": "🧄", "hi": "लहसुन", "en": "Garlic" },
+      "featured": {
+        "fruit": { "emoji": "🥭", "hi": "आम", "en": "Mango" },
+        "flower": { "emoji": "🌷", "hi": "रजनीगंधा", "en": "Tuberose" },
+        "vegetable": { "emoji": "🥒", "hi": "लौकी", "en": "Bottle gourd" },
+        "spice": { "emoji": "🧅", "hi": "प्याज", "en": "Onion" },
+        "forestry": { "emoji": "🌸", "hi": "महुआ", "en": "Mahua" },
+        "scheme": { "scheme": "pmkisan" }
+      },
       "fruit": [
         { "hi": "आम के फल मटर के दाने जितने होने पर हल्की सिंचाई करें, इससे फल कम झड़ते हैं।", "en": "Give mango a light irrigation once fruits are pea-sized to reduce fruit drop." },
         { "hi": "केला बाग में सूखी पत्तियां हटाकर मल्चिंग करें।", "en": "Remove dry banana leaves and mulch the plantation." }
@@ -61,7 +82,14 @@
       ]
     },
     "4": {
-      "featured": { "emoji": "🍉", "hi": "तरबूज", "en": "Watermelon" },
+      "featured": {
+        "fruit": { "emoji": "🥭", "hi": "आम", "en": "Mango" },
+        "flower": { "emoji": "🌸", "hi": "मोगरा", "en": "Jasmine" },
+        "vegetable": { "emoji": "🍉", "hi": "तरबूज", "en": "Watermelon" },
+        "spice": { "emoji": "🫚", "hi": "हल्दी", "en": "Turmeric" },
+        "forestry": { "emoji": "🍃", "hi": "तेंदूपत्ता", "en": "Tendu leaves" },
+        "scheme": { "scheme": "midh" }
+      },
       "fruit": [
         { "hi": "आम के बढ़ते फलों में 10-15 दिन पर सिंचाई करें; नए पौधों को लू से बचाने के लिए छाया दें।", "en": "Irrigate developing mangoes every 10-15 days; shade young plants from hot winds." }
       ],
@@ -79,7 +107,14 @@
       ]
     },
     "5": {
-      "featured": { "emoji": "🥭", "hi": "आम", "en": "Mango" },
+      "featured": {
+        "fruit": { "emoji": "🥭", "hi": "आम", "en": "Mango" },
+        "flower": { "emoji": "🌼", "hi": "गेंदा", "en": "Marigold" },
+        "vegetable": { "emoji": "🍅", "hi": "टमाटर (नर्सरी)", "en": "Tomato (nursery)" },
+        "spice": { "emoji": "🫚", "hi": "अदरक", "en": "Ginger" },
+        "forestry": { "emoji": "🌱", "hi": "वृक्षारोपण की तैयारी", "en": "Planting prep" },
+        "scheme": { "scheme": "pmksy" }
+      },
       "fruit": [
         { "hi": "नए बाग के लिए 1x1x1 मीटर के गड्ढे खोदकर धूप लगने दें; आम की तुड़ाई सही परिपक्वता पर करें।", "en": "Dig 1x1x1 m pits for new orchards and leave them to sun; harvest mangoes at proper maturity." },
         { "hi": "पपीता की नर्सरी तैयार करें।", "en": "Raise papaya seedlings." }
@@ -98,7 +133,14 @@
       ]
     },
     "6": {
-      "featured": { "emoji": "🌱", "hi": "वृक्षारोपण", "en": "Planting" },
+      "featured": {
+        "fruit": { "emoji": "🍋", "hi": "नींबू", "en": "Lemon" },
+        "flower": { "emoji": "🌼", "hi": "गेंदा", "en": "Marigold" },
+        "vegetable": { "emoji": "🥒", "hi": "करेला", "en": "Bitter gourd" },
+        "spice": { "emoji": "🫚", "hi": "हल्दी", "en": "Turmeric" },
+        "forestry": { "emoji": "🎋", "hi": "बांस", "en": "Bamboo" },
+        "scheme": { "scheme": "pmfby" }
+      },
       "fruit": [
         { "hi": "मानसून आते ही गड्ढों में गोबर खाद व मिट्टी भरकर आम, अमरूद, आंवला, नींबू, कटहल के पौधे लगाएं।", "en": "With the monsoon, fill pits with manure and soil and plant mango, guava, aonla, lemon and jackfruit." },
         { "hi": "बाग में पानी निकास की नालियां बनाएं।", "en": "Make drainage channels in orchards." }
@@ -117,7 +159,14 @@
       ]
     },
     "7": {
-      "featured": { "emoji": "🍌", "hi": "केला", "en": "Banana" },
+      "featured": {
+        "fruit": { "emoji": "🍌", "hi": "केला", "en": "Banana" },
+        "flower": { "emoji": "🌼", "hi": "गेंदा", "en": "Marigold" },
+        "vegetable": { "emoji": "🍆", "hi": "बैंगन", "en": "Brinjal" },
+        "spice": { "emoji": "🌶️", "hi": "मिर्च", "en": "Chilli" },
+        "forestry": { "emoji": "🌳", "hi": "नीम", "en": "Neem" },
+        "scheme": { "scheme": "pmfby" }
+      },
       "fruit": [
         { "hi": "केला और पपीता की रोपाई करें; पुराने आम बागों में खाद-उर्वरक की आधी मात्रा दें।", "en": "Plant banana and papaya; give half the fertilizer dose to old mango orchards." },
         { "hi": "बाग में पानी भरने न दें; अमरूद में बहार प्रबंधन करें।", "en": "Avoid waterlogging; manage guava crop regulation (bahar)." }
@@ -136,7 +185,14 @@
       ]
     },
     "8": {
-      "featured": { "emoji": "🌶️", "hi": "मिर्च", "en": "Chilli" },
+      "featured": {
+        "fruit": { "emoji": "🍈", "hi": "पपीता", "en": "Papaya" },
+        "flower": { "emoji": "💮", "hi": "गुलदाउदी", "en": "Chrysanthemum" },
+        "vegetable": { "emoji": "🥦", "hi": "अगेती फूलगोभी", "en": "Early cauliflower" },
+        "spice": { "emoji": "🌶️", "hi": "मिर्च", "en": "Chilli" },
+        "forestry": { "emoji": "🌳", "hi": "करंज", "en": "Karanj" },
+        "scheme": { "scheme": "nbm" }
+      },
       "fruit": [
         { "hi": "बाग में निराई और पानी निकास रखें; नींबू में कैंकर और आम में एन्थ्रेक्नोज की निगरानी करें।", "en": "Weed and drain orchards; watch for citrus canker and mango anthracnose." }
       ],
@@ -154,7 +210,14 @@
       ]
     },
     "9": {
-      "featured": { "emoji": "🥦", "hi": "फूलगोभी", "en": "Cauliflower" },
+      "featured": {
+        "fruit": { "emoji": "🍈", "hi": "पपीता", "en": "Papaya" },
+        "flower": { "emoji": "🌼", "hi": "गेंदा", "en": "Marigold" },
+        "vegetable": { "emoji": "🥦", "hi": "फूलगोभी", "en": "Cauliflower" },
+        "spice": { "emoji": "🧄", "hi": "लहसुन", "en": "Garlic" },
+        "forestry": { "emoji": "🌳", "hi": "सागौन", "en": "Teak" },
+        "scheme": { "scheme": "enam" }
+      },
       "fruit": [
         { "hi": "आम-अमरूद में शेष खाद-उर्वरक दें; पपीता व केला की रोपाई का अच्छा समय है।", "en": "Give the remaining fertilizer to mango and guava; good time to plant papaya and banana." }
       ],
@@ -172,7 +235,14 @@
       ]
     },
     "10": {
-      "featured": { "emoji": "🍌", "hi": "केला", "en": "Banana" },
+      "featured": {
+        "fruit": { "emoji": "🍌", "hi": "केला", "en": "Banana" },
+        "flower": { "emoji": "🌷", "hi": "ग्लेडियोलस", "en": "Gladiolus" },
+        "vegetable": { "emoji": "🍅", "hi": "टमाटर", "en": "Tomato" },
+        "spice": { "emoji": "🧄", "hi": "लहसुन", "en": "Garlic" },
+        "forestry": { "emoji": "🎋", "hi": "बांस", "en": "Bamboo" },
+        "scheme": { "scheme": "midh" }
+      },
       "fruit": [
         { "hi": "केला और पपीता की रोपाई करें; आम की सूखी व रोगग्रस्त शाखाओं की छंटाई करें।", "en": "Plant banana and papaya; prune dry and diseased mango branches." },
         { "hi": "अमरूद में फल मक्खी के लिए ट्रैप लगाएं।", "en": "Set fruit fly traps in guava." }
@@ -191,7 +261,14 @@
       ]
     },
     "11": {
-      "featured": { "emoji": "🧅", "hi": "प्याज", "en": "Onion" },
+      "featured": {
+        "fruit": { "emoji": "🍏", "hi": "आंवला", "en": "Aonla" },
+        "flower": { "emoji": "💮", "hi": "गुलदाउदी", "en": "Chrysanthemum" },
+        "vegetable": { "emoji": "🧅", "hi": "प्याज", "en": "Onion" },
+        "spice": { "emoji": "🌿", "hi": "धनिया", "en": "Coriander" },
+        "forestry": { "emoji": "🌰", "hi": "साल बीज", "en": "Sal seed" },
+        "scheme": { "scheme": "pmfby" }
+      },
       "fruit": [
         { "hi": "आंवला की तुड़ाई करें; आम के थालों की गुड़ाई कर मिलीबग के अंडे नष्ट करें।", "en": "Harvest aonla; hoe mango basins to destroy mealybug eggs." },
         { "hi": "पपीता में खाद और सिंचाई दें।", "en": "Feed and water papaya." }
@@ -210,7 +287,14 @@
       ]
     },
     "12": {
-      "featured": { "emoji": "🫚", "hi": "हल्दी-अदरक", "en": "Turmeric & ginger" },
+      "featured": {
+        "fruit": { "emoji": "🍏", "hi": "अमरूद", "en": "Guava" },
+        "flower": { "emoji": "🌹", "hi": "गुलाब", "en": "Rose" },
+        "vegetable": { "emoji": "🥔", "hi": "आलू", "en": "Potato" },
+        "spice": { "emoji": "🫚", "hi": "हल्दी-अदरक", "en": "Turmeric & ginger" },
+        "forestry": { "emoji": "🌳", "hi": "सागौन", "en": "Teak" },
+        "scheme": { "scheme": "pmfby" }
+      },
       "fruit": [
         { "hi": "पाले से बचाव: नए पौधों को ढकें और शाम को हल्की सिंचाई करें; आम के तनों पर मिलीबग पट्टी बांधें।", "en": "Frost care: cover young plants and irrigate lightly in the evening; band mango trunks against mealybug." },
         { "hi": "अमरूद की सर्दी की फसल तोड़ें।", "en": "Harvest the winter guava crop." }

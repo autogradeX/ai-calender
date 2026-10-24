@@ -49,7 +49,12 @@ const STRINGS = {
     publicHolidays: "सार्वजनिक अवकाश",
     optionalHolidays: "ऐच्छिक अवकाश",
     thisMonthWork: (m) => `${m} के कृषि कार्य`,
-    featured: (name) => `इस माह: ${name}`,
+    featured: {
+      fruit: "इस माह का फल", flower: "इस माह का फूल", vegetable: "इस माह की सब्जी",
+      spice: "इस माह का मसाला", forestry: "इस माह (वानिकी)", scheme: "इस माह की योजना",
+    },
+    askFeatured: (label, name) => `${label}: ${name}। इस महीने इसके लिए क्या-क्या करना चाहिए? मुख्य काम, खाद, सिंचाई और कीट-रोग से बचाव बताइए।`,
+    askFeaturedScheme: (name) => `${name} के बारे में बताइए: इस महीने यह क्यों ज़रूरी है, कौन पात्र है और आवेदन कैसे करें?`,
     addToCalendar: "+ कैलेंडर में जोड़ें",
     askAi: "AI से पूछें",
     openPortal: "पोर्टल खोलें ↗",
@@ -132,7 +137,12 @@ const STRINGS = {
     publicHolidays: "Public holidays",
     optionalHolidays: "Optional holidays",
     thisMonthWork: (m) => `Farm work in ${m}`,
-    featured: (name) => `This month: ${name}`,
+    featured: {
+      fruit: "Fruit of the month", flower: "Flower of the month", vegetable: "Vegetable of the month",
+      spice: "Spice of the month", forestry: "Forestry this month", scheme: "Scheme of the month",
+    },
+    askFeatured: (label, name) => `${label}: ${name}. What should I do for it this month? Main tasks, fertilizer, irrigation and pest/disease protection.`,
+    askFeaturedScheme: (name) => `Tell me about ${name}: why it matters this month, who is eligible and how to apply.`,
     addToCalendar: "+ Add to calendar",
     askAi: "Ask AI",
     openPortal: "Open portal ↗",
@@ -323,12 +333,7 @@ function renderMonth() {
   $("year-badge").textContent = cursor.getFullYear();
   const k = state.knowledge;
   $("hindu-months").textContent = k && cursor.getFullYear() === k.calendar.year ? k.calendar.hinduMonths[monthNo] : "";
-  const featured = k?.advisory.months[monthNo]?.featured;
-  $("featured").hidden = !featured;
-  if (featured) {
-    $("featured-emoji").textContent = featured.emoji;
-    $("featured-label").textContent = t().featured(featured[state.lang]);
-  }
+  renderFeatured();
 
   const weekdays = $("weekdays");
   weekdays.replaceChildren(
@@ -430,7 +435,49 @@ function renderAgenda() {
   }
 }
 
+// The banner's "of the month" badge follows the selected category (fruit, vegetable, ...).
+function featuredItem() {
+  const k = state.knowledge;
+  const featured = k?.advisory.months[state.cursor.getMonth() + 1]?.featured?.[state.category];
+  if (!featured) return null;
+  const label = t().featured[state.category];
+  if (featured.scheme) {
+    const sc = k.schemes.schemes.find((x) => x.id === featured.scheme);
+    if (!sc) return null;
+    const name = state.lang === "hi" ? sc.shortHi : sc.shortEn;
+    return { emoji: "📜", label, name, question: t().askFeaturedScheme(sc[state.lang]) };
+  }
+  const name = featured[state.lang];
+  return { emoji: featured.emoji, label, name, question: t().askFeatured(label, name) };
+}
+
+function renderFeatured() {
+  const item = featuredItem();
+  const badge = $("featured");
+  badge.hidden = !item;
+  if (!item) return;
+  badge.dataset.cat = state.category;
+  const emoji = $("featured-emoji");
+  if (emoji.textContent !== item.emoji) {
+    emoji.textContent = item.emoji;
+    emoji.style.animation = "none";
+    void emoji.offsetWidth; // restart the pop animation
+    emoji.style.animation = "";
+  }
+  $("featured-label").replaceChildren(
+    el("small", { textContent: item.label }),
+    el("strong", { textContent: item.name }),
+  );
+  badge.title = item.question;
+}
+
+$("featured").addEventListener("click", () => {
+  const item = featuredItem();
+  if (item) sendMessage(item.question);
+});
+
 function renderCategories() {
+  renderFeatured();
   const row = $("category-row");
   row.replaceChildren(
     ...CATEGORY_META.map(({ id, emoji }) => {

@@ -1,6 +1,6 @@
 // Service worker: makes the app installable and usable offline.
 // Bump VERSION whenever app files change so phones pick up the new version.
-const VERSION = "v2";
+const VERSION = "v3";
 const SHELL_CACHE = `shell-${VERSION}`;
 const DATA_CACHE = `data-${VERSION}`;
 

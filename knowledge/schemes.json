@@ -3,6 +3,8 @@
   "schemes": [
     {
       "id": "midh",
+      "shortHi": "बागवानी मिशन (MIDH)",
+      "shortEn": "Horticulture Mission (MIDH)",
       "hi": "एकीकृत बागवानी विकास मिशन (MIDH)",
       "en": "Mission for Integrated Development of Horticulture (MIDH)",
       "benefitHi": "फल, फूल, सब्जी, मसाले के नए बाग, नर्सरी, पॉलीहाउस/शेडनेट, पैक हाउस और कोल्ड स्टोरेज के लिए अनुदान।",
@@ -12,6 +14,8 @@
     },
     {
       "id": "pmksy",
+      "shortHi": "ड्रिप/स्प्रिंकलर अनुदान",
+      "shortEn": "Drip/sprinkler subsidy",
       "hi": "प्रधानमंत्री कृषि सिंचाई योजना - पर ड्रॉप मोर क्रॉप",
       "en": "PM Krishi Sinchai Yojana - Per Drop More Crop",
       "benefitHi": "ड्रिप और स्प्रिंकलर सिंचाई पर अनुदान; लघु/सीमांत किसानों को अधिक सहायता।",
@@ -21,6 +25,8 @@
     },
     {
       "id": "pmfby",
+      "shortHi": "फसल बीमा (PMFBY)",
+      "shortEn": "Crop insurance (PMFBY)",
       "hi": "प्रधानमंत्री फसल बीमा योजना (PMFBY)",
       "en": "Pradhan Mantri Fasal Bima Yojana (PMFBY)",
       "benefitHi": "प्राकृतिक आपदा, कीट-रोग से फसल नुकसान पर बीमा; वार्षिक वाणिज्यिक/बागवानी फसलों पर किसान का प्रीमियम 5%। हर मौसम की अंतिम तिथि से पहले पंजीयन करें।",
@@ -30,6 +36,8 @@
     },
     {
       "id": "pmkisan",
+      "shortHi": "पीएम-किसान",
+      "shortEn": "PM-KISAN",
       "hi": "पीएम-किसान सम्मान निधि",
       "en": "PM-KISAN Samman Nidhi",
       "benefitHi": "पात्र किसान परिवारों को ₹6,000 प्रति वर्ष, तीन किस्तों में सीधे बैंक खाते में। e-KYC पूरा रखें।",
@@ -39,6 +47,8 @@
     },
     {
       "id": "kcc",
+      "shortHi": "किसान क्रेडिट कार्ड",
+      "shortEn": "Kisan Credit Card",
       "hi": "किसान क्रेडिट कार्ड (KCC)",
       "en": "Kisan Credit Card (KCC)",
       "benefitHi": "खेती, बागवानी, पशुपालन के लिए कम ब्याज पर फसल ऋण; समय पर चुकाने पर ब्याज में अतिरिक्त छूट। अपने बैंक में आवेदन करें।",
@@ -48,6 +58,8 @@
     },
     {
       "id": "soilhealth",
+      "shortHi": "मृदा स्वास्थ्य कार्ड",
+      "shortEn": "Soil Health Card",
       "hi": "मृदा स्वास्थ्य कार्ड",
       "en": "Soil Health Card",
       "benefitHi": "मिट्टी की जांच कर पोषक तत्वों और खाद की सही मात्रा की सलाह।",
@@ -57,6 +69,8 @@
     },
     {
       "id": "nbm",
+      "shortHi": "राष्ट्रीय बांस मिशन",
+      "shortEn": "Bamboo Mission",
       "hi": "राष्ट्रीय बांस मिशन",
       "en": "National Bamboo Mission",
       "benefitHi": "निजी भूमि पर बांस रोपण, नर्सरी और बांस आधारित उद्यम के लिए सहायता।",
@@ -66,6 +80,8 @@
     },
     {
       "id": "enam",
+      "shortHi": "ई-नाम मंडी",
+      "shortEn": "e-NAM market",
       "hi": "ई-नाम (राष्ट्रीय कृषि बाजार)",
       "en": "e-NAM (National Agriculture Market)",
       "benefitHi": "ऑनलाइन मंडी में उपज बेचें और देशभर के भाव देखें।",
@@ -75,6 +91,8 @@
     },
     {
       "id": "kusum",
+      "shortHi": "सोलर पंप (कुसुम)",
+      "shortEn": "Solar pump (KUSUM)",
       "hi": "पीएम-कुसुम (सोलर पंप)",
       "en": "PM-KUSUM (solar pumps)",
       "benefitHi": "सिंचाई के लिए सोलर पंप पर अनुदान।",
@@ -84,6 +102,8 @@
     },
     {
       "id": "aif",
+      "shortHi": "कृषि अवसंरचना कोष",
+      "shortEn": "Agri Infra Fund",
       "hi": "कृषि अवसंरचना कोष (AIF)",
       "en": "Agriculture Infrastructure Fund (AIF)",
       "benefitHi": "कोल्ड स्टोरेज, गोदाम, ग्रेडिंग-पैकिंग इकाई के लिए ब्याज छूट वाला ऋण।",
