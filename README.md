@@ -37,6 +37,36 @@ Open http://localhost:3000. The calendar, monthly advice and schemes work withou
 | `PORT` | `3000` | HTTP port |
 | `DATA_FILE` | `data/events.json` | Where farmers' tasks are stored |
 
+## Deploy to Google Cloud Run
+
+The repo includes a `Dockerfile` and a `deploy.sh` script.
+
+```bash
+gcloud auth login
+PROJECT_ID=your-project-id ./deploy.sh
+```
+
+The script, which is safe to re-run:
+1. enables Cloud Run, Cloud Build, Artifact Registry, Secret Manager and Cloud Storage;
+2. creates a bucket `<project>-kisan-calendar-data` and mounts it at `/data`, so saved tasks survive restarts and redeploys;
+3. stores your Anthropic API key in Secret Manager (asked for on the first run only) and passes it in as `ANTHROPIC_API_KEY`;
+4. builds the image with Cloud Build and deploys the `kisan-ai-calendar` service to `asia-south1` (Mumbai), then prints the URL.
+
+Override `REGION`, `SERVICE`, `BUCKET` or `SECRET` with environment variables if needed.
+
+Things to know:
+- **One shared calendar.** There are no user accounts yet: everyone who opens the URL sees and edits the same tasks. Fine for a demo or a single farm or office; per-farmer calendars need login or per-device storage.
+- **One instance.** Tasks live in a single JSON file, so the service runs with `--max-instances 1`. That comfortably serves a demo or pilot; a larger rollout should move storage to Firestore.
+- **Public AI endpoint.** The URL is public (`--allow-unauthenticated`), so anyone can use the assistant on your API key. Set a spend limit in the Anthropic Console, or remove `--allow-unauthenticated` to restrict access.
+- **Health check:** `GET /healthz`.
+
+To try the container locally:
+
+```bash
+docker build -t kisan-ai-calendar .
+docker run -p 8080:8080 -e ANTHROPIC_API_KEY=sk-ant-... kisan-ai-calendar
+```
+
 ## Content to review before release
 
 The farm knowledge lives in plain JSON under `knowledge/` so university staff can edit it without touching code:

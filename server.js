@@ -342,6 +342,9 @@ async function handle(req, res) {
   const url = new URL(req.url, `http://${req.headers.host || "localhost"}`);
   const { pathname } = url;
 
+  if (pathname === "/healthz") {
+    return sendJson(res, 200, { ok: true });
+  }
   if (pathname === "/api/knowledge" && req.method === "GET") {
     return sendJson(res, 200, KNOWLEDGE);
   }
@@ -421,4 +424,9 @@ const server = http.createServer(async (req, res) => {
 
 server.listen(PORT, () => {
   console.log(`Kisan AI Calendar running at http://localhost:${PORT}`);
+});
+
+// Cloud Run sends SIGTERM before stopping an instance; let in-flight writes finish.
+process.on("SIGTERM", () => {
+  server.close(() => storeQueue.finally(() => process.exit(0)));
 });
