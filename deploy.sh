@@ -20,6 +20,7 @@ SECRET="${SECRET:-azure-openai-api-key}"
 AZURE_OPENAI_ENDPOINT="${AZURE_OPENAI_ENDPOINT:?Set AZURE_OPENAI_ENDPOINT, e.g. https://my-resource.openai.azure.com/}"
 AZURE_OPENAI_DEPLOYMENT="${AZURE_OPENAI_DEPLOYMENT:?Set AZURE_OPENAI_DEPLOYMENT to your model deployment name, e.g. gpt-4o}"
 OPENAI_API_VERSION="${OPENAI_API_VERSION:-2024-10-21}"
+ENV_VARS="DATA_FILE=/data/events.json,AZURE_OPENAI_ENDPOINT=${AZURE_OPENAI_ENDPOINT},AZURE_OPENAI_DEPLOYMENT=${AZURE_OPENAI_DEPLOYMENT},OPENAI_API_VERSION=${OPENAI_API_VERSION}"
 
 gcloud config set project "$PROJECT_ID" >/dev/null
 
@@ -57,7 +58,7 @@ gcloud run deploy "$SERVICE" \
   --max-instances 1 \
   --timeout 300 \
   --set-secrets "AZURE_OPENAI_API_KEY=${SECRET}:latest" \
-  --set-env-vars "DATA_FILE=/data/events.json,AZURE_OPENAI_ENDPOINT=${AZURE_OPENAI_ENDPOINT},AZURE_OPENAI_DEPLOYMENT=${AZURE_OPENAI_DEPLOYMENT},OPENAI_API_VERSION=${OPENAI_API_VERSION}" \
+  --set-env-vars "$ENV_VARS" \
   --add-volume "name=data,type=cloud-storage,bucket=${BUCKET},mount-options=uid=1000;gid=1000" \
   --add-volume-mount "volume=data,mount-path=/data"
 

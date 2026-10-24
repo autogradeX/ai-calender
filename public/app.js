@@ -78,6 +78,10 @@ const STRINGS = {
     undone: "बदलाव वापस ले लिए गए।",
     speakOn: "जवाब बोलकर सुनाएं: चालू",
     speakOff: "जवाब बोलकर सुनाएं: बंद",
+    listen: "🔊 सुनें",
+    stopListening: "⏹ रोकें",
+    noHindiVoice: "इस फ़ोन/ब्राउज़र में हिंदी आवाज़ नहीं मिली, इसलिए आवाज़ साफ़ नहीं आ सकती। Android पर: सेटिंग्स → Text-to-speech → Google में हिंदी आवाज़ डाउनलोड करें। कंप्यूटर पर Chrome या Edge इस्तेमाल करें।",
+    noSpeech: "यह ब्राउज़र बोलकर सुनाने की सुविधा नहीं देता। Chrome या Edge इस्तेमाल करें।",
     cropPlanTitle: "🌱 फसल योजना बनाएं",
     cropPlanHint: "फसल और बुवाई/रोपाई की तारीख बताइए। किसान साथी खाद, सिंचाई, निराई, कीट निगरानी और तुड़ाई के सभी काम तारीख सहित कैलेंडर में जोड़ देगा।",
     crop: "फसल",
@@ -157,6 +161,10 @@ const STRINGS = {
     undone: "Changes undone.",
     speakOn: "Read replies aloud: on",
     speakOff: "Read replies aloud: off",
+    listen: "🔊 Listen",
+    stopListening: "⏹ Stop",
+    noHindiVoice: "No Hindi voice was found on this phone/browser, so Hindi may not be read correctly. On Android: Settings → Text-to-speech → Google, download the Hindi voice. On a computer, use Chrome or Edge.",
+    noSpeech: "This browser can't read text aloud. Please use Chrome or Edge.",
     cropPlanTitle: "🌱 Make a crop plan",
     cropPlanHint: "Enter the crop and its sowing/transplanting date. Kisan Saathi will add dated tasks for fertilizer, irrigation, weeding, pest checks and harvest to your calendar.",
     crop: "Crop",
@@ -689,12 +697,80 @@ async function undoChanges(applied) {
   await refresh();
 }
 
-function speak(text) {
-  if (!state.speak || !("speechSynthesis" in window)) return;
-  speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = state.lang === "hi" ? "hi-IN" : "en-IN";
-  speechSynthesis.speak(utterance);
+// ---------- Read aloud (free: the phone's/browser's built-in voices) ----------
+
+const canSpeak = "speechSynthesis" in window;
+let voices = [];
+let speakingButton = null;
+const shownNotices = new Set();
+
+function loadVoices() {
+  voices = speechSynthesis.getVoices();
+}
+if (canSpeak) {
+  loadVoices();
+  speechSynthesis.addEventListener("voiceschanged", loadVoices);
+}
+
+function notice(key) {
+  if (shownNotices.has(key)) return;
+  shownNotices.add(key);
+  addMessage("error", t()[key]);
+}
+
+// Prefer a Hindi voice for Devanagari text, whatever the app language is.
+function pickVoice(lang) {
+  const prefix = lang.slice(0, 2);
+  const matches = voices.filter((v) => v.lang.replace("_", "-").toLowerCase().startsWith(prefix));
+  return matches.find((v) => /google|swara|natural|online/i.test(v.name)) ?? matches[0] ?? null;
+}
+
+// Chrome stops long utterances after ~15 seconds, so read one sentence at a time.
+function sentences(text) {
+  return (text.match(/[^।.!?\n]+[।.!?]*/g) ?? [text]).map((x) => x.trim()).filter(Boolean);
+}
+
+function setSpeakingButton(button) {
+  if (speakingButton) speakingButton.textContent = t().listen;
+  speakingButton = button;
+  if (button) button.textContent = t().stopListening;
+}
+
+function stopSpeaking() {
+  if (canSpeak) speechSynthesis.cancel();
+  setSpeakingButton(null);
+}
+
+function speak(text, button = null) {
+  stopSpeaking();
+  setSpeakingButton(button);
+  if (!canSpeak) return notice("noSpeech");
+  const lang = /[\u0900-\u097F]/.test(text) ? "hi-IN" : state.lang === "hi" ? "hi-IN" : "en-IN";
+  const voice = pickVoice(lang);
+  if (!voice && lang === "hi-IN") notice("noHindiVoice");
+  speechSynthesis.resume(); // Chrome can get stuck "paused" after a cancel
+  const parts = sentences(text);
+  parts.forEach((part, i) => {
+    const u = new SpeechSynthesisUtterance(part);
+    u.lang = voice?.lang ?? lang;
+    if (voice) u.voice = voice;
+    u.rate = 0.95;
+    if (i === parts.length - 1) u.addEventListener("end", () => setSpeakingButton(null));
+    speechSynthesis.speak(u);
+  });
+}
+
+// A "Listen" button on each reply; tapping it is a direct user action, which
+// phones require before they will play speech.
+function addListenButton(node, text) {
+  node.dataset.text = text;
+  const button = el("button", { type: "button", className: "link-btn listen", textContent: t().listen });
+  button.addEventListener("click", () => {
+    if (speakingButton === button) stopSpeaking();
+    else speak(text, button);
+  });
+  node.append(button);
+  return button;
 }
 
 let busy = false;
@@ -723,7 +799,8 @@ async function sendMessage(message) {
     });
     pending.className = "msg bot";
     pending.textContent = result.reply;
-    speak(result.reply);
+    const listenButton = addListenButton(pending, result.reply);
+    if (state.speak) speak(result.reply, listenButton);
     if (result.applied.length) {
       pending.append(el("div", { className: "changes", textContent: result.applied.map(describeChange).join("\n") }));
       const undo = el("button", { type: "button", className: "link-btn undo", textContent: t().undo });
@@ -762,8 +839,12 @@ $("chat-form").addEventListener("submit", (e) => {
 
 $("speak-toggle").addEventListener("click", () => {
   state.speak = !state.speak;
-  if (!state.speak && "speechSynthesis" in window) speechSynthesis.cancel();
   renderStatic();
+  if (!state.speak) return stopSpeaking();
+  // Turning it on reads the latest reply straight away.
+  const replies = chat.querySelectorAll(".msg.bot:not(.pending)");
+  const last = replies[replies.length - 1];
+  if (last?.dataset.text) speak(last.dataset.text, last.querySelector(".listen"));
 });
 
 // Voice input: many farmers find speaking easier than typing.
@@ -852,7 +933,8 @@ window.addEventListener("offline", updateOnline);
   renderStatic();
   updateOnline();
   showView(location.hash.slice(1));
-  addMessage("bot", t().welcome);
+  const welcome = addMessage("bot", t().welcome);
+  addListenButton(welcome, t().welcome);
   try {
     state.knowledge = await api("/api/knowledge");
     await refresh();

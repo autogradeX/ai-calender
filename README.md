@@ -33,6 +33,8 @@ npm start
 
 Open http://localhost:3000. The calendar, monthly advice and schemes work without Azure settings. Only Kisan Saathi needs them.
 
+**Read-aloud (🔊 सुनें):** every reply has a listen button. It is free: it uses the phone's or browser's built-in voices (Web Speech API) and picks a Hindi voice when one is installed. Chrome and Edge include one; on Android, install the Hindi voice under Settings → Text-to-speech → Google. If no Hindi voice is found, the app tells the farmer how to add one.
+
 The deployment must be a model that supports **structured outputs** (JSON schema), for example `gpt-4o` (2024-08-06 or later), `gpt-4o-mini`, `gpt-4.1` or `gpt-5`.
 
 | Variable | Default | Purpose |
