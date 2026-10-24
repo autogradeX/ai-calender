@@ -1,0 +1,232 @@
+{
+  "_note": "General month-wise horticulture operations for the Chhattisgarh plains (Durg region). Starter content: have MGUVV scientists review it and add varieties, doses and local timings.",
+  "region": { "hi": "छत्तीसगढ़ (मैदानी क्षेत्र)", "en": "Chhattisgarh (plains)" },
+  "months": {
+    "1": {
+      "featured": { "emoji": "🥬", "hi": "पत्तागोभी", "en": "Cabbage" },
+      "fruit": [
+        { "hi": "आम में मिलीबग रोकने के लिए तने पर 30 सेमी चौड़ी पॉलीथीन/ग्रीस की पट्टी बांधें।", "en": "Tie a 30 cm polythene/grease band round mango trunks to stop mealybugs climbing." },
+        { "hi": "पाले से बचाव के लिए नए पौधों को पुआल से ढकें और शाम को हल्की सिंचाई करें।", "en": "Cover young plants with straw and give a light evening irrigation to protect against frost." }
+      ],
+      "flower": [
+        { "hi": "गेंदा, गुलदाउदी और ग्लेडियोलस की तुड़ाई सुबह ठंडे समय में करें।", "en": "Harvest marigold, chrysanthemum and gladiolus in the cool morning hours." }
+      ],
+      "vegetable": [
+        { "hi": "टमाटर, बैंगन, गोभी और मटर में निराई-गुड़ाई कर नत्रजन की टॉप ड्रेसिंग करें।", "en": "Weed tomato, brinjal, cole crops and peas, then top-dress with nitrogen." },
+        { "hi": "जनवरी के अंत में लौकी, करेला, खीरा की जायद बुवाई की तैयारी करें।", "en": "Late January: prepare for summer (zaid) sowing of bottle gourd, bitter gourd and cucumber." }
+      ],
+      "spice": [
+        { "hi": "लहसुन और प्याज में 10-12 दिन के अंतर पर सिंचाई करें; धनिया-मेथी की हरी पत्ती काटें।", "en": "Irrigate garlic and onion every 10-12 days; cut green coriander and fenugreek leaves." }
+      ],
+      "forestry": [
+        { "hi": "नर्सरी के पौधों को पाले से बचाएं; बांस और सागौन रोपण की योजना बनाएं।", "en": "Protect nursery seedlings from frost; plan bamboo and teak planting." }
+      ]
+    },
+    "2": {
+      "featured": { "emoji": "🥭", "hi": "आम का बौर", "en": "Mango blossom" },
+      "fruit": [
+        { "hi": "आम में बौर आने पर भुनगा (हॉपर) और खर्रा रोग की निगरानी करें; फूल आने के समय सिंचाई न करें।", "en": "Watch flowering mango for hoppers and powdery mildew; do not irrigate during bloom." },
+        { "hi": "नींबू वर्गीय पौधों में खाद दें और पपीता-केला में सिंचाई करें।", "en": "Feed citrus plants and irrigate papaya and banana." }
+      ],
+      "flower": [
+        { "hi": "जिनिया, कोचिया, सूरजमुखी जैसे गर्मी के फूलों की नर्सरी लगाएं।", "en": "Raise nurseries of summer flowers such as zinnia, kochia and sunflower." }
+      ],
+      "vegetable": [
+        { "hi": "भिंडी, लौकी, करेला, खीरा, तरबूज की जायद बुवाई करें; आलू की खुदाई करें।", "en": "Sow zaid okra, gourds, cucumber and watermelon; dig potatoes." }
+      ],
+      "spice": [
+        { "hi": "धनिया और मेथी की बीज फसल की देखरेख करें; परिपक्व हल्दी-अदरक की खुदाई करें।", "en": "Tend coriander and fenugreek seed crops; dig mature turmeric and ginger." }
+      ],
+      "forestry": [
+        { "hi": "नर्सरी में पॉलीबैग भरकर सागौन, शीशम, करंज के बीज बोएं; जंगल की आग रोकने के लिए फायर लाइन बनाएं।", "en": "Fill nursery polybags and sow teak, shisham and karanj; cut fire lines against forest fires." }
+      ]
+    },
+    "3": {
+      "featured": { "emoji": "🧄", "hi": "लहसुन", "en": "Garlic" },
+      "fruit": [
+        { "hi": "आम के फल मटर के दाने जितने होने पर हल्की सिंचाई करें, इससे फल कम झड़ते हैं।", "en": "Give mango a light irrigation once fruits are pea-sized to reduce fruit drop." },
+        { "hi": "केला बाग में सूखी पत्तियां हटाकर मल्चिंग करें।", "en": "Remove dry banana leaves and mulch the plantation." }
+      ],
+      "flower": [
+        { "hi": "रजनीगंधा के कंद लगाएं; गुलाब में कटाई के बाद खाद व सिंचाई दें।", "en": "Plant tuberose bulbs; feed and water roses after cutting." }
+      ],
+      "vegetable": [
+        { "hi": "जायद सब्जियों में 5-7 दिन पर सिंचाई करें; भिंडी में पीला शिरा रोग वाले पौधे उखाड़ दें।", "en": "Irrigate zaid vegetables every 5-7 days; uproot okra plants showing yellow vein mosaic." }
+      ],
+      "spice": [
+        { "hi": "पत्तियां पीली पड़ने पर लहसुन-प्याज की खुदाई करें और छाया में सुखाकर भंडारित करें।", "en": "Lift garlic and onion when leaves turn yellow; cure in shade before storing." }
+      ],
+      "forestry": [
+        { "hi": "महुआ फूल संग्रहण की तैयारी करें; बरसात के रोपण के लिए जगह चुनें।", "en": "Prepare for mahua flower collection; choose sites for monsoon planting." }
+      ]
+    },
+    "4": {
+      "featured": { "emoji": "🍉", "hi": "तरबूज", "en": "Watermelon" },
+      "fruit": [
+        { "hi": "आम के बढ़ते फलों में 10-15 दिन पर सिंचाई करें; नए पौधों को लू से बचाने के लिए छाया दें।", "en": "Irrigate developing mangoes every 10-15 days; shade young plants from hot winds." }
+      ],
+      "flower": [
+        { "hi": "गर्मी के फूलों में नियमित सिंचाई करें; मोगरा-बेला की तुड़ाई करें।", "en": "Water summer flowers regularly; pick jasmine (mogra/bela)." }
+      ],
+      "vegetable": [
+        { "hi": "कद्दूवर्गीय फसलों में फल मक्खी के लिए फेरोमोन ट्रैप लगाएं; भिंडी-लौकी की तुड़ाई करें।", "en": "Set pheromone traps for fruit fly in gourds; harvest okra and bottle gourd." }
+      ],
+      "spice": [
+        { "hi": "खाली खेत की गहरी जुताई करें ताकि धूप से कीट-रोग नष्ट हों; हल्दी-अदरक के लिए खेत तैयार करें।", "en": "Deep-plough empty fields so the sun kills pests; prepare land for turmeric and ginger." }
+      ],
+      "forestry": [
+        { "hi": "तेंदूपत्ता, महुआ, साल बीज जैसे लघु वनोपज का संग्रहण करें; नर्सरी में छाया व सिंचाई दें।", "en": "Collect minor forest produce like tendu leaves, mahua and sal seed; shade and water the nursery." }
+      ]
+    },
+    "5": {
+      "featured": { "emoji": "🥭", "hi": "आम", "en": "Mango" },
+      "fruit": [
+        { "hi": "नए बाग के लिए 1x1x1 मीटर के गड्ढे खोदकर धूप लगने दें; आम की तुड़ाई सही परिपक्वता पर करें।", "en": "Dig 1x1x1 m pits for new orchards and leave them to sun; harvest mangoes at proper maturity." },
+        { "hi": "पपीता की नर्सरी तैयार करें।", "en": "Raise papaya seedlings." }
+      ],
+      "flower": [
+        { "hi": "बरसाती गेंदा के लिए नर्सरी की तैयारी करें।", "en": "Prepare nursery beds for the rainy-season marigold crop." }
+      ],
+      "vegetable": [
+        { "hi": "टमाटर, मिर्च, बैंगन की खरीफ नर्सरी की तैयारी करें; जायद फसलों की तुड़ाई करें।", "en": "Prepare kharif nurseries of tomato, chilli and brinjal; harvest zaid crops." }
+      ],
+      "spice": [
+        { "hi": "मई के अंत से हल्दी-अदरक के उपचारित प्रकंद मेड़ों पर लगाएं।", "en": "From late May, plant treated turmeric and ginger rhizomes on ridges." }
+      ],
+      "forestry": [
+        { "hi": "बरसात से पहले वृक्षारोपण के गड्ढे खोदें; नर्सरी पौधों की ग्रेडिंग करें।", "en": "Dig planting pits before the rains; grade nursery seedlings." }
+      ]
+    },
+    "6": {
+      "featured": { "emoji": "🌱", "hi": "वृक्षारोपण", "en": "Planting" },
+      "fruit": [
+        { "hi": "मानसून आते ही गड्ढों में गोबर खाद व मिट्टी भरकर आम, अमरूद, आंवला, नींबू, कटहल के पौधे लगाएं।", "en": "With the monsoon, fill pits with manure and soil and plant mango, guava, aonla, lemon and jackfruit." },
+        { "hi": "बाग में पानी निकास की नालियां बनाएं।", "en": "Make drainage channels in orchards." }
+      ],
+      "flower": [
+        { "hi": "गेंदा की रोपाई करें; रजनीगंधा में खाद दें।", "en": "Transplant marigold; feed tuberose." }
+      ],
+      "vegetable": [
+        { "hi": "भिंडी, लौकी, करेला, तोरई की खरीफ बुवाई करें; मिर्च-बैंगन की नर्सरी लगाएं।", "en": "Sow kharif okra and gourds; raise chilli and brinjal nurseries." }
+      ],
+      "spice": [
+        { "hi": "हल्दी-अदरक में पत्तियों या पुआल से मल्चिंग करें।", "en": "Mulch turmeric and ginger with leaves or straw." }
+      ],
+      "forestry": [
+        { "hi": "वृक्षारोपण का मुख्य समय: सागौन, बांस, आंवला, करंज, नीम आदि लगाएं।", "en": "Main planting season: plant teak, bamboo, aonla, karanj, neem and others." }
+      ]
+    },
+    "7": {
+      "featured": { "emoji": "🍌", "hi": "केला", "en": "Banana" },
+      "fruit": [
+        { "hi": "केला और पपीता की रोपाई करें; पुराने आम बागों में खाद-उर्वरक की आधी मात्रा दें।", "en": "Plant banana and papaya; give half the fertilizer dose to old mango orchards." },
+        { "hi": "बाग में पानी भरने न दें; अमरूद में बहार प्रबंधन करें।", "en": "Avoid waterlogging; manage guava crop regulation (bahar)." }
+      ],
+      "flower": [
+        { "hi": "गेंदा में निराई करें और शीर्ष तोड़ें (पिंचिंग) ताकि अधिक शाखाएं बनें।", "en": "Weed marigold and pinch the tips for more branches." }
+      ],
+      "vegetable": [
+        { "hi": "टमाटर, मिर्च, बैंगन की रोपाई करें; खेत में पानी निकास रखें।", "en": "Transplant tomato, chilli and brinjal; keep fields drained." }
+      ],
+      "spice": [
+        { "hi": "हल्दी-अदरक में निराई और मिट्टी चढ़ाएं; मिर्च की रोपाई करें।", "en": "Weed and earth up turmeric and ginger; transplant chilli." }
+      ],
+      "forestry": [
+        { "hi": "वन महोत्सव पर सामूहिक वृक्षारोपण करें; पौधों को सहारा दें।", "en": "Join Van Mahotsav community planting; stake young trees." }
+      ]
+    },
+    "8": {
+      "featured": { "emoji": "🌶️", "hi": "मिर्च", "en": "Chilli" },
+      "fruit": [
+        { "hi": "बाग में निराई और पानी निकास रखें; नींबू में कैंकर और आम में एन्थ्रेक्नोज की निगरानी करें।", "en": "Weed and drain orchards; watch for citrus canker and mango anthracnose." }
+      ],
+      "flower": [
+        { "hi": "गुलदाउदी की कटिंग लगाएं; गेंदा की तुड़ाई करें।", "en": "Root chrysanthemum cuttings; harvest marigold." }
+      ],
+      "vegetable": [
+        { "hi": "फल छेदक और पत्ती धब्बा रोग की निगरानी करें; अगेती फूलगोभी की नर्सरी लगाएं।", "en": "Monitor fruit borer and leaf spot; sow early cauliflower nursery." }
+      ],
+      "spice": [
+        { "hi": "हल्दी-अदरक में दूसरी बार मिट्टी चढ़ाएं और खाद दें; प्रकंद सड़न पर नजर रखें।", "en": "Second earthing-up and feeding for turmeric and ginger; watch for rhizome rot." }
+      ],
+      "forestry": [
+        { "hi": "मरे पौधों की जगह नए पौधे लगाएं (गैप फिलिंग) और निराई करें।", "en": "Replace dead saplings (gap filling) and weed plantations." }
+      ]
+    },
+    "9": {
+      "featured": { "emoji": "🥦", "hi": "फूलगोभी", "en": "Cauliflower" },
+      "fruit": [
+        { "hi": "आम-अमरूद में शेष खाद-उर्वरक दें; पपीता व केला की रोपाई का अच्छा समय है।", "en": "Give the remaining fertilizer to mango and guava; good time to plant papaya and banana." }
+      ],
+      "flower": [
+        { "hi": "ग्लेडियोलस कंद रोपण की तैयारी करें; सर्दी के गेंदा की नर्सरी लगाएं।", "en": "Prepare for gladiolus corm planting; sow winter marigold nursery." }
+      ],
+      "vegetable": [
+        { "hi": "फूलगोभी, पत्तागोभी, टमाटर, बैंगन की रबी नर्सरी लगाएं; मूली-गाजर की अगेती बुवाई करें।", "en": "Sow rabi nurseries of cauliflower, cabbage, tomato and brinjal; early sowing of radish and carrot." }
+      ],
+      "spice": [
+        { "hi": "लहसुन-प्याज के लिए खेत तैयार करें; मिर्च में थ्रिप्स और माइट की निगरानी करें।", "en": "Prepare land for garlic and onion; watch chilli for thrips and mites." }
+      ],
+      "forestry": [
+        { "hi": "पौधों के चारों ओर थाला बनाएं और निराई करें; बीज संग्रहण की योजना बनाएं।", "en": "Make basins round saplings and weed; plan seed collection." }
+      ]
+    },
+    "10": {
+      "featured": { "emoji": "🍌", "hi": "केला", "en": "Banana" },
+      "fruit": [
+        { "hi": "केला और पपीता की रोपाई करें; आम की सूखी व रोगग्रस्त शाखाओं की छंटाई करें।", "en": "Plant banana and papaya; prune dry and diseased mango branches." },
+        { "hi": "अमरूद में फल मक्खी के लिए ट्रैप लगाएं।", "en": "Set fruit fly traps in guava." }
+      ],
+      "flower": [
+        { "hi": "ग्लेडियोलस कंद, गेंदा और गुलदाउदी की रोपाई करें; महीने के अंत में गुलाब की कटाई-छंटाई करें।", "en": "Plant gladiolus corms, marigold and chrysanthemum; prune roses at month end." }
+      ],
+      "vegetable": [
+        { "hi": "टमाटर, फूलगोभी, पत्तागोभी, बैंगन की रोपाई करें; मटर, पालक, मूली, गाजर बोएं; प्याज की नर्सरी लगाएं।", "en": "Transplant tomato, cauliflower, cabbage and brinjal; sow peas, spinach, radish and carrot; raise onion nursery." }
+      ],
+      "spice": [
+        { "hi": "लहसुन की कलियां बोएं; धनिया और मेथी की बुवाई करें।", "en": "Plant garlic cloves; sow coriander and fenugreek." }
+      ],
+      "forestry": [
+        { "hi": "पेड़ों के थालों में मल्चिंग करें; सर्दी में सिंचाई की योजना बनाएं।", "en": "Mulch tree basins; plan winter irrigation." }
+      ]
+    },
+    "11": {
+      "featured": { "emoji": "🧅", "hi": "प्याज", "en": "Onion" },
+      "fruit": [
+        { "hi": "आंवला की तुड़ाई करें; आम के थालों की गुड़ाई कर मिलीबग के अंडे नष्ट करें।", "en": "Harvest aonla; hoe mango basins to destroy mealybug eggs." },
+        { "hi": "पपीता में खाद और सिंचाई दें।", "en": "Feed and water papaya." }
+      ],
+      "flower": [
+        { "hi": "गेंदा-गुलदाउदी की तुड़ाई करें; गुलाब में खाद दें।", "en": "Harvest marigold and chrysanthemum; feed roses." }
+      ],
+      "vegetable": [
+        { "hi": "रबी सब्जियों में निराई, सिंचाई और टॉप ड्रेसिंग करें; महीने के अंत से प्याज की रोपाई करें।", "en": "Weed, irrigate and top-dress rabi vegetables; start transplanting onion at month end." }
+      ],
+      "spice": [
+        { "hi": "धनिया-मेथी में सिंचाई करें; लहसुन में निराई करें।", "en": "Irrigate coriander and fenugreek; weed garlic." }
+      ],
+      "forestry": [
+        { "hi": "साल और सागौन के बीज इकट्ठे करें; नर्सरी बुवाई की तैयारी करें।", "en": "Collect sal and teak seed; prepare nursery beds." }
+      ]
+    },
+    "12": {
+      "featured": { "emoji": "🫚", "hi": "हल्दी-अदरक", "en": "Turmeric & ginger" },
+      "fruit": [
+        { "hi": "पाले से बचाव: नए पौधों को ढकें और शाम को हल्की सिंचाई करें; आम के तनों पर मिलीबग पट्टी बांधें।", "en": "Frost care: cover young plants and irrigate lightly in the evening; band mango trunks against mealybug." },
+        { "hi": "अमरूद की सर्दी की फसल तोड़ें।", "en": "Harvest the winter guava crop." }
+      ],
+      "flower": [
+        { "hi": "सर्दी के फूलों में सिंचाई करें; ग्लेडियोलस की स्पाइक तोड़ें।", "en": "Water winter flowers; cut gladiolus spikes." }
+      ],
+      "vegetable": [
+        { "hi": "प्याज की रोपाई करें; टमाटर को सहारा दें; आलू में मिट्टी चढ़ाएं।", "en": "Transplant onion; stake tomato; earth up potatoes." }
+      ],
+      "spice": [
+        { "hi": "पत्तियां सूखने पर हल्दी और अदरक की खुदाई करें।", "en": "Dig turmeric and ginger once the leaves dry." }
+      ],
+      "forestry": [
+        { "hi": "पौधों को पाले से बचाएं; जंगल में आग से बचाव की तैयारी करें।", "en": "Protect saplings from frost; prepare for forest fire season." }
+      ]
+    }
+  }
+}

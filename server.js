@@ -7,9 +7,18 @@ import Anthropic from "@anthropic-ai/sdk";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC_DIR = path.join(here, "public");
+const KNOWLEDGE_DIR = path.join(here, "knowledge");
 const DATA_FILE = process.env.DATA_FILE || path.join(here, "data", "events.json");
 const PORT = Number(process.env.PORT) || 3000;
 const MODEL = process.env.CLAUDE_MODEL || "claude-opus-5-5";
+
+// Farm knowledge shipped with the app: holidays, month-wise advisory, schemes.
+const readKnowledge = async (name) => JSON.parse(await fs.readFile(path.join(KNOWLEDGE_DIR, name), "utf8"));
+const KNOWLEDGE = {
+  calendar: await readKnowledge("calendar-2026.json"),
+  advisory: await readKnowledge("advisory.json"),
+  schemes: await readKnowledge("schemes.json"),
+};
 
 const MIME = {
   ".html": "text/html; charset=utf-8",
@@ -52,32 +61,42 @@ function withStore(fn) {
   return run;
 }
 
-const COLORS = ["blue", "green", "purple", "orange", "red"];
+// Each event belongs to a horticulture category (matches the wall calendar's QR row).
+const CATEGORIES = ["fruit", "flower", "vegetable", "spice", "forestry", "scheme", "personal"];
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const DATETIME_RE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/;
 
 function normalizeEvent(input, existing = {}) {
   const ev = {
-    id: existing.id || crypto.randomUUID(),
+    id: existing.id || restoredId(input.id) || crypto.randomUUID(),
     title: String(input.title ?? existing.title ?? "").trim(),
     start: input.start ?? existing.start,
     end: input.end ?? existing.end,
     allDay: Boolean(input.allDay ?? existing.allDay ?? false),
     location: String(input.location ?? existing.location ?? "").trim(),
     notes: String(input.notes ?? existing.notes ?? "").trim(),
-    color: COLORS.includes(input.color) ? input.color : existing.color ?? "blue",
+    category: CATEGORIES.includes(input.category) ? input.category : existing.category ?? "personal",
   };
   if (!ev.title) throw new HttpError(400, "Event title is required");
   const re = ev.allDay ? DATE_RE : DATETIME_RE;
   if (ev.allDay) {
     ev.start = String(ev.start ?? "").slice(0, 10);
     ev.end = String(ev.end ?? ev.start).slice(0, 10);
+  } else {
+    // A timed event given only a date (e.g. switched off "all day") starts at 9am.
+    if (DATE_RE.test(ev.start ?? "")) ev.start += "T09:00";
+    if (DATE_RE.test(ev.end ?? "")) ev.end = ev.end === ev.start.slice(0, 10) ? `${ev.end}T10:00` : `${ev.end}T18:00`;
   }
   if (!re.test(ev.start ?? "")) throw new HttpError(400, `Invalid start: ${ev.start}`);
   if (!ev.end) ev.end = ev.start;
   if (!re.test(ev.end)) throw new HttpError(400, `Invalid end: ${ev.end}`);
   if (ev.end < ev.start) throw new HttpError(400, "End must not be before start");
   return ev;
+}
+
+// Lets undo re-create a deleted event under its original id.
+function restoredId(id) {
+  return typeof id === "string" && /^[0-9a-f-]{36}$/i.test(id) ? id : null;
 }
 
 // ---------- Claude assistant ----------
@@ -88,19 +107,34 @@ function getClient() {
   return client;
 }
 
-const SYSTEM_PROMPT = `You are the scheduling assistant inside a personal calendar app.
-The user talks to you in natural language. You can read their calendar and propose changes to it.
+const schemeList = KNOWLEDGE.schemes.schemes.map((sc) => `- ${sc.hi} / ${sc.en}: ${sc.benefitEn} (${sc.url})`).join("\n");
 
-Rules:
-- Resolve relative dates ("tomorrow", "next Friday", "in two weeks") against the current date and time given in the request.
-- Timed events use "YYYY-MM-DDTHH:mm" (24h, the user's local time). All-day events set allDay=true and use "YYYY-MM-DD" with an inclusive end date.
-- If the user gives no duration, default to 1 hour for meetings and 30 minutes for calls or quick tasks.
-- To change or remove an existing event, reference it by its exact id from the calendar listing. Never invent ids.
-- Only create, update, or delete events when the user asks for a change. For questions ("what's on Tuesday?", "when am I free?"), answer from the calendar and return no actions.
-- Before scheduling, check for overlaps with existing events and mention any conflict in your reply.
-- If a request is too ambiguous to act on safely, ask a short clarifying question and return no actions.
-- Keep the reply short and friendly: one to three sentences, plain text, no markdown.
-- Pick a color for new events: "blue" (default/work), "green" (personal/health), "purple" (social), "orange" (travel/errands), "red" (deadlines/important).`;
+const SYSTEM_PROMPT = `You are "Kisan Saathi" (किसान साथी), the AI assistant inside a farm calendar published by ${KNOWLEDGE.calendar.university.en} (${KNOWLEDGE.calendar.university.hi}), Durg, Chhattisgarh.
+Your users are farmers and growers of horticulture crops: fruits (फल), flowers (फूल), vegetables (सब्जी), spices (मसाले), forestry/agroforestry (वानिकी), and people looking for government schemes (सरकारी योजनाएं).
+You help them plan and remember farm work on their calendar and answer practical crop questions for Chhattisgarh conditions (hot summers, monsoon June-September, mild winters with occasional frost; kharif, rabi and zaid seasons).
+
+Language:
+- Reply in the language the farmer writes in. Default to simple Hindi (Devanagari) that a village farmer understands; Chhattisgarhi words are welcome. Use English only if the farmer writes in English.
+- Write event titles and notes in the same language as your reply.
+
+Calendar rules:
+- Resolve relative dates ("कल", "अगले सोमवार", "15 दिन बाद") against the current date given in the request.
+- Timed events use "YYYY-MM-DDTHH:mm" (24h, local time). Field work without a set time is an all-day event: allDay=true with "YYYY-MM-DD" dates, end inclusive.
+- Give every event a category: fruit, flower, vegetable, spice, forestry, scheme (scheme deadlines and applications), or personal.
+- To change or remove an existing event, use its exact id from the calendar listing. Never invent ids.
+- Only create, update, or delete events when the farmer asks you to add, plan, schedule, remind, move or remove something. For questions, answer and return no actions.
+- When the farmer asks for a crop plan ("टमाटर की खेती का कैलेंडर बनाओ"), create a dated schedule of the key operations from that crop's sowing or transplanting date: land preparation, nursery, sowing/transplanting, fertilizer doses, irrigation rhythm, weeding, pest and disease checks, staking/pruning where relevant, and harvest. Usually 6-15 events. Put the practical detail (quantities per acre, method) in notes. If the crop, date or area is missing, ask one short question first.
+- Mention any clash with holidays or existing events.
+
+Advice rules:
+- Base advice on standard recommendations for Chhattisgarh. Prefer integrated pest management, organic options and safe practices. When you mention a chemical, give the common name and dose, and remind them to follow the label and the safety waiting period before harvest.
+- For anything uncertain or serious (unknown disease, heavy losses, exact chemical choice), suggest contacting the nearest Krishi Vigyan Kendra, the district horticulture officer (उद्यान अधिकारी), or MGUVV scientists.
+- For schemes, only describe the schemes listed below or other real, well-known government schemes. Do not invent amounts, eligibility or deadlines; tell them to confirm on the official portal or at the district horticulture office.
+
+Reply style: short and warm, 1-5 sentences, plain text without markdown. For crop plans, summarise the plan in a few lines; the details go into the events.
+
+Government schemes you can refer to:
+${schemeList}`;
 
 const nullableString = { type: ["string", "null"] };
 
@@ -121,9 +155,9 @@ const RESPONSE_SCHEMA = {
           allDay: { type: ["boolean", "null"] },
           location: nullableString,
           notes: nullableString,
-          color: { type: ["string", "null"], enum: ["blue", "green", "purple", "orange", "red", null] },
+          category: { type: ["string", "null"], enum: [...CATEGORIES, null] },
         },
-        required: ["type", "id", "title", "start", "end", "allDay", "location", "notes", "color"],
+        required: ["type", "id", "title", "start", "end", "allDay", "location", "notes", "category"],
         additionalProperties: false,
       },
     },
@@ -132,24 +166,59 @@ const RESPONSE_SCHEMA = {
   additionalProperties: false,
 };
 
-function describeCalendar(events) {
-  if (events.length === 0) return "(no events)";
-  return [...events]
+// Keep the prompt bounded: recent and upcoming events only.
+const MAX_CONTEXT_EVENTS = 300;
+
+function describeCalendar(events, today) {
+  const cutoff = shiftDate(today, -30);
+  const relevant = events.filter((e) => e.end.slice(0, 10) >= cutoff);
+  if (relevant.length === 0) return "(no events)";
+  return relevant
+    .sort((a, b) => a.start.localeCompare(b.start))
+    .slice(0, MAX_CONTEXT_EVENTS)
     .sort((a, b) => a.start.localeCompare(b.start))
     .map((e) => {
       const when = e.allDay ? `${e.start} to ${e.end} (all day)` : `${e.start} to ${e.end}`;
       const extras = [e.location && `at ${e.location}`, e.notes && `notes: ${e.notes}`].filter(Boolean).join("; ");
-      return `- id=${e.id} | ${e.title} | ${when}${extras ? ` | ${extras}` : ""}`;
+      return `- id=${e.id} | [${e.category}] ${e.title} | ${when}${extras ? ` | ${extras}` : ""}`;
     })
     .join("\n");
 }
 
-async function askAssistant({ message, history, now, timezone }) {
-  const events = await loadEvents();
-  const context = `Current local date/time: ${now} (${timezone}).
+function shiftDate(dateKey, days) {
+  const d = new Date(`${dateKey}T00:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + days);
+  return d.toISOString().slice(0, 10);
+}
 
-The user's calendar:
-${describeCalendar(events)}`;
+function describeSeason(today) {
+  const month = Number(today.slice(5, 7));
+  const lines = [];
+  for (const m of [month, (month % 12) + 1]) {
+    const adv = KNOWLEDGE.advisory.months[m];
+    const label = m === month ? "This month" : "Next month";
+    lines.push(`${label} (${m}):`);
+    for (const cat of ["fruit", "flower", "vegetable", "spice", "forestry"]) {
+      for (const tip of adv[cat]) lines.push(`  [${cat}] ${tip.en}`);
+    }
+  }
+  const upcoming = KNOWLEDGE.calendar.holidays
+    .filter((h) => h.date >= today && h.date <= shiftDate(today, 60))
+    .map((h) => `  ${h.date} ${h.hi} (${h.type === "public" ? "public holiday" : "optional holiday"})`);
+  if (upcoming.length) lines.push("Holidays in the next 60 days:", ...upcoming);
+  return lines.join("\n");
+}
+
+async function askAssistant({ message, history, now, timezone, language }) {
+  const events = await loadEvents();
+  const today = /^\d{4}-\d{2}-\d{2}/.test(now) ? now.slice(0, 10) : new Date().toISOString().slice(0, 10);
+  const context = `Current local date/time: ${now} (${timezone}). App language: ${language === "en" ? "English" : "Hindi"}.
+
+University advisory for the season:
+${describeSeason(today)}
+
+The farmer's calendar:
+${describeCalendar(events, today)}`;
 
   // Keep the last few turns so follow-ups ("make it 3pm instead") work.
   const priorTurns = (Array.isArray(history) ? history : [])
@@ -164,17 +233,17 @@ ${describeCalendar(events)}`;
     fallbacks: "default",
     system: SYSTEM_PROMPT,
     output_config: {
-      effort: "low",
+      effort: "medium",
       format: { type: "json_schema", schema: RESPONSE_SCHEMA },
     },
     messages: [...priorTurns, { role: "user", content: `${context}\n\nUser request: ${message}` }],
   });
 
   if (response.stop_reason === "refusal") {
-    return { reply: "Sorry, I can't help with that request.", applied: [], events };
+    return { reply: "माफ़ कीजिए, मैं इस अनुरोध में मदद नहीं कर सकता। / Sorry, I can't help with that request.", applied: [], events };
   }
   if (response.stop_reason === "max_tokens") {
-    throw new HttpError(502, "The assistant's response was cut off. Please try a shorter request.");
+    throw new HttpError(502, "जवाब अधूरा रह गया, कृपया छोटा अनुरोध करें। / The response was cut off. Please try a shorter request.");
   }
 
   const text = response.content
@@ -194,7 +263,7 @@ ${describeCalendar(events)}`;
     return { save: result.applied.length > 0, value: { ...result, events: current } };
   });
   let reply = parsed.reply;
-  if (errors.length) reply += `\n(Some changes could not be applied: ${errors.join("; ")})`;
+  if (errors.length) reply += `\n(कुछ बदलाव लागू नहीं हो सके / Some changes could not be applied: ${errors.join("; ")})`;
   return { reply, applied, events: updated };
 }
 
@@ -207,7 +276,7 @@ function applyActions(events, actions) {
         Object.entries(action).filter(([k, v]) => v !== null && k !== "type" && k !== "id"),
       );
       if (action.type === "create") {
-        const ev = normalizeEvent(fields);
+        const ev = normalizeEvent({ ...fields, id: undefined });
         events.push(ev);
         applied.push({ type: "create", event: ev });
       } else {
@@ -215,12 +284,11 @@ function applyActions(events, actions) {
         if (idx === -1) throw new Error(`no event with id ${action.id}`);
         if (action.type === "delete") {
           const [removed] = events.splice(idx, 1);
-          applied.push({ type: "delete", event: removed });
+          applied.push({ type: "delete", event: removed, before: removed });
         } else {
-          // Switching between timed and all-day without new times would leave
-          // mismatched formats; normalizeEvent rejects that and we report it.
-          events[idx] = normalizeEvent(fields, events[idx]);
-          applied.push({ type: "update", event: events[idx] });
+          const before = events[idx];
+          events[idx] = normalizeEvent(fields, before);
+          applied.push({ type: "update", event: events[idx], before });
         }
       }
     } catch (err) {
@@ -274,12 +342,16 @@ async function handle(req, res) {
   const url = new URL(req.url, `http://${req.headers.host || "localhost"}`);
   const { pathname } = url;
 
+  if (pathname === "/api/knowledge" && req.method === "GET") {
+    return sendJson(res, 200, KNOWLEDGE);
+  }
   if (pathname === "/api/events" && req.method === "GET") {
     return sendJson(res, 200, await loadEvents());
   }
   if (pathname === "/api/events" && req.method === "POST") {
     const input = await readJson(req);
     const ev = await withStore((events) => {
+      if (input.id && events.some((e) => e.id === input.id)) throw new HttpError(409, "Event already exists");
       const created = normalizeEvent(input);
       events.push(created);
       return { save: true, value: created };
@@ -312,7 +384,8 @@ async function handle(req, res) {
       message: body.message.slice(0, 4000),
       history: body.history,
       now: body.now || new Date().toISOString(),
-      timezone: body.timezone || "local time",
+      timezone: body.timezone || "Asia/Kolkata",
+      language: body.language,
     });
     return sendJson(res, 200, result);
   }
@@ -329,16 +402,16 @@ const server = http.createServer(async (req, res) => {
     let message = err instanceof HttpError ? err.message : "Internal server error";
     if (err instanceof Anthropic.AuthenticationError) {
       status = 503;
-      message = "AI assistant is not configured. Set ANTHROPIC_API_KEY and restart the server.";
+      message = "AI सहायक चालू नहीं है। ANTHROPIC_API_KEY सेट करें। / AI assistant is not configured. Set ANTHROPIC_API_KEY and restart the server.";
     } else if (err instanceof Anthropic.RateLimitError) {
       status = 429;
-      message = "The AI assistant is busy. Please try again in a moment.";
+      message = "AI सहायक व्यस्त है, थोड़ी देर बाद कोशिश करें। / The AI assistant is busy. Please try again in a moment.";
     } else if (err instanceof Anthropic.APIError) {
       status = 502;
       message = `AI assistant error: ${err.message}`;
     } else if (err instanceof Error && /credentials|apiKey|authToken/i.test(err.message)) {
       status = 503;
-      message = "AI assistant is not configured. Set ANTHROPIC_API_KEY and restart the server.";
+      message = "AI सहायक चालू नहीं है। ANTHROPIC_API_KEY सेट करें। / AI assistant is not configured. Set ANTHROPIC_API_KEY and restart the server.";
     }
     if (status >= 500) console.error(err);
     if (!res.headersSent) sendJson(res, status, { error: message });
@@ -347,5 +420,5 @@ const server = http.createServer(async (req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`AI Calendar running at http://localhost:${PORT}`);
+  console.log(`Kisan AI Calendar running at http://localhost:${PORT}`);
 });

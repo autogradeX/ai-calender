@@ -1,42 +1,94 @@
 <!doctype html>
-<html lang="en">
+<html lang="hi">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AI Calendar</title>
+  <title>किसान AI कैलेंडर</title>
+  <meta name="description" content="उद्यानिकी किसानों के लिए AI कैलेंडर: फल, फूल, सब्जी, मसाले, वानिकी और सरकारी योजनाएं">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <header class="topbar">
+    <div class="brand">
+      <img src="favicon.svg" alt="" width="34" height="34">
+      <div>
+        <div class="brand-title" data-i18n="appName"></div>
+        <div class="brand-sub" data-i18n="university"></div>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn light" id="crop-plan-btn" data-i18n="cropPlan"></button>
+      <button class="btn light" id="lang-toggle" aria-label="Language">English</button>
+    </div>
+  </header>
+
   <div class="app">
     <main class="calendar">
-      <header class="toolbar">
-        <h1 id="month-label"></h1>
-        <div class="toolbar-actions">
-          <button class="btn ghost" id="prev" aria-label="Previous month">&#8249;</button>
-          <button class="btn ghost" id="today">Today</button>
-          <button class="btn ghost" id="next" aria-label="Next month">&#8250;</button>
-          <button class="btn primary" id="new-event">+ New event</button>
+      <section class="banner">
+        <div class="year-badge" id="year-badge"></div>
+        <div class="featured" id="featured" title="">
+          <span class="featured-emoji" id="featured-emoji"></span>
+          <span class="featured-label" id="featured-label"></span>
         </div>
-      </header>
+        <div class="month-head">
+          <div class="month-nav">
+            <button class="icon-btn" id="prev" aria-label="Previous month">&#8249;</button>
+            <button class="btn light small" id="today" data-i18n="today"></button>
+            <button class="icon-btn" id="next" aria-label="Next month">&#8250;</button>
+          </div>
+          <h1 id="month-label"></h1>
+          <div class="hindu-months" id="hindu-months"></div>
+        </div>
+      </section>
+
       <div class="weekdays" id="weekdays"></div>
       <div class="grid" id="grid"></div>
+
+      <div class="holiday-notes" id="holiday-notes"></div>
+
+      <section class="categories">
+        <a class="podcast" id="podcast" target="_blank" rel="noopener">
+          <span aria-hidden="true">🎧</span> <span id="podcast-label"></span>
+        </a>
+        <div class="category-row" id="category-row"></div>
+      </section>
+
+      <footer class="uni-footer">
+        <span data-i18n="university"></span>
+        <a href="https://www.mguvv.ac.in" target="_blank" rel="noopener">www.mguvv.ac.in</a>
+      </footer>
     </main>
 
     <aside class="sidebar">
-      <section class="day-panel">
-        <h2 id="day-label"></h2>
+      <section class="panel day-panel">
+        <div class="panel-head">
+          <h2 id="day-label"></h2>
+          <button class="btn small" id="new-event" data-i18n="newEvent"></button>
+        </div>
         <ul class="agenda" id="agenda"></ul>
       </section>
 
-      <section class="assistant-panel">
-        <h2>Assistant</h2>
-        <div class="chat" id="chat" aria-live="polite">
-          <div class="msg assistant">Hi! Tell me what to schedule, move, or cancel, or ask about your week. Try “Lunch with Sam next Thursday at noon” or “What's on tomorrow?”</div>
+      <section class="panel advisory-panel">
+        <div class="panel-head">
+          <h2 id="advisory-title"></h2>
+          <a class="more-link" id="advisory-more" target="_blank" rel="noopener" data-i18n="learnMore"></a>
         </div>
+        <div class="advisory-tabs" id="advisory-tabs" role="tablist"></div>
+        <ul class="advisory-list" id="advisory-list"></ul>
+      </section>
+
+      <section class="panel assistant-panel">
+        <div class="panel-head">
+          <h2 data-i18n="assistant"></h2>
+          <button class="icon-btn small" id="speak-toggle" aria-pressed="false" title=""></button>
+        </div>
+        <div class="chat" id="chat" aria-live="polite"></div>
+        <div class="suggestions" id="suggestions"></div>
         <form class="chat-form" id="chat-form">
-          <input id="chat-input" type="text" placeholder="Ask or schedule something…" autocomplete="off" required>
-          <button class="btn primary" type="submit">Send</button>
+          <button class="icon-btn mic" type="button" id="mic" hidden>🎤</button>
+          <input id="chat-input" type="text" autocomplete="off" required>
+          <button class="btn primary" type="submit" data-i18n="send"></button>
         </form>
       </section>
     </aside>
@@ -44,30 +96,42 @@
 
   <dialog id="event-dialog">
     <form method="dialog" id="event-form">
-      <h2 id="dialog-title">New event</h2>
-      <label>Title <input name="title" required></label>
-      <label class="inline"><input type="checkbox" name="allDay"> All day</label>
+      <h2 id="dialog-title"></h2>
+      <label><span data-i18n="title"></span> <input name="title" required></label>
+      <label class="inline"><input type="checkbox" name="allDay"> <span data-i18n="allDay"></span></label>
       <div class="row">
-        <label>Start <input name="start" type="datetime-local" required></label>
-        <label>End <input name="end" type="datetime-local" required></label>
+        <label><span data-i18n="start"></span> <input name="start" type="datetime-local" required></label>
+        <label><span data-i18n="end"></span> <input name="end" type="datetime-local" required></label>
       </div>
-      <label>Location <input name="location"></label>
-      <label>Notes <textarea name="notes" rows="3"></textarea></label>
-      <label>Color
-        <select name="color">
-          <option value="blue">Blue</option>
-          <option value="green">Green</option>
-          <option value="purple">Purple</option>
-          <option value="orange">Orange</option>
-          <option value="red">Red</option>
-        </select>
-      </label>
+      <label><span data-i18n="category"></span> <select name="category" id="category-select"></select></label>
+      <label><span data-i18n="location"></span> <input name="location"></label>
+      <label><span data-i18n="notes"></span> <textarea name="notes" rows="3"></textarea></label>
       <p class="form-error" id="form-error" hidden></p>
       <div class="dialog-actions">
-        <button class="btn danger" type="button" id="delete-event" hidden>Delete</button>
+        <button class="btn danger" type="button" id="delete-event" data-i18n="delete" hidden></button>
         <span class="spacer"></span>
-        <button class="btn ghost" type="button" id="cancel-event">Cancel</button>
-        <button class="btn primary" type="submit">Save</button>
+        <button class="btn" type="button" id="cancel-event" data-i18n="cancel"></button>
+        <button class="btn primary" type="submit" data-i18n="save"></button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="plan-dialog">
+    <form method="dialog" id="plan-form">
+      <h2 data-i18n="cropPlanTitle"></h2>
+      <p class="hint" data-i18n="cropPlanHint"></p>
+      <label><span data-i18n="category"></span> <select name="category" id="plan-category"></select></label>
+      <label><span data-i18n="crop"></span> <input name="crop" list="crop-options" required></label>
+      <datalist id="crop-options"></datalist>
+      <div class="row">
+        <label><span data-i18n="sowDate"></span> <input name="date" type="date" required></label>
+        <label><span data-i18n="area"></span> <input name="area" type="number" min="0.05" step="0.05" value="1"></label>
+      </div>
+      <label><span data-i18n="district"></span> <input name="district" value="दुर्ग"></label>
+      <div class="dialog-actions">
+        <span class="spacer"></span>
+        <button class="btn" type="button" id="cancel-plan" data-i18n="cancel"></button>
+        <button class="btn primary" type="submit" data-i18n="makePlan"></button>
       </div>
     </form>
   </dialog>

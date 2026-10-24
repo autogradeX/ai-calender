@@ -1,0 +1,95 @@
+{
+  "_note": "Benefits, amounts and deadlines change. The assistant is told to send farmers to the official portal or the district horticulture office to confirm before applying.",
+  "schemes": [
+    {
+      "id": "midh",
+      "hi": "एकीकृत बागवानी विकास मिशन (MIDH)",
+      "en": "Mission for Integrated Development of Horticulture (MIDH)",
+      "benefitHi": "फल, फूल, सब्जी, मसाले के नए बाग, नर्सरी, पॉलीहाउस/शेडनेट, पैक हाउस और कोल्ड स्टोरेज के लिए अनुदान।",
+      "benefitEn": "Subsidy for new orchards, nurseries, polyhouse/shade-net, pack houses and cold storage for fruits, flowers, vegetables and spices.",
+      "categories": ["fruit", "flower", "vegetable", "spice"],
+      "url": "https://midh.gov.in"
+    },
+    {
+      "id": "pmksy",
+      "hi": "प्रधानमंत्री कृषि सिंचाई योजना - पर ड्रॉप मोर क्रॉप",
+      "en": "PM Krishi Sinchai Yojana - Per Drop More Crop",
+      "benefitHi": "ड्रिप और स्प्रिंकलर सिंचाई पर अनुदान; लघु/सीमांत किसानों को अधिक सहायता।",
+      "benefitEn": "Subsidy on drip and sprinkler irrigation, with higher support for small and marginal farmers.",
+      "categories": ["fruit", "flower", "vegetable", "spice"],
+      "url": "https://pmksy.gov.in"
+    },
+    {
+      "id": "pmfby",
+      "hi": "प्रधानमंत्री फसल बीमा योजना (PMFBY)",
+      "en": "Pradhan Mantri Fasal Bima Yojana (PMFBY)",
+      "benefitHi": "प्राकृतिक आपदा, कीट-रोग से फसल नुकसान पर बीमा; वार्षिक वाणिज्यिक/बागवानी फसलों पर किसान का प्रीमियम 5%। हर मौसम की अंतिम तिथि से पहले पंजीयन करें।",
+      "benefitEn": "Crop insurance against natural calamities, pests and disease; farmer premium is 5% for annual commercial/horticulture crops. Enrol before each season's cut-off date.",
+      "categories": ["fruit", "vegetable", "spice"],
+      "url": "https://pmfby.gov.in"
+    },
+    {
+      "id": "pmkisan",
+      "hi": "पीएम-किसान सम्मान निधि",
+      "en": "PM-KISAN Samman Nidhi",
+      "benefitHi": "पात्र किसान परिवारों को ₹6,000 प्रति वर्ष, तीन किस्तों में सीधे बैंक खाते में। e-KYC पूरा रखें।",
+      "benefitEn": "₹6,000 a year to eligible farmer families in three instalments, paid directly to the bank account. Keep e-KYC up to date.",
+      "categories": [],
+      "url": "https://pmkisan.gov.in"
+    },
+    {
+      "id": "kcc",
+      "hi": "किसान क्रेडिट कार्ड (KCC)",
+      "en": "Kisan Credit Card (KCC)",
+      "benefitHi": "खेती, बागवानी, पशुपालन के लिए कम ब्याज पर फसल ऋण; समय पर चुकाने पर ब्याज में अतिरिक्त छूट। अपने बैंक में आवेदन करें।",
+      "benefitEn": "Low-interest crop loans for farming, horticulture and livestock, with an extra interest rebate for timely repayment. Apply at your bank.",
+      "categories": [],
+      "url": "https://www.myscheme.gov.in/schemes/kcc"
+    },
+    {
+      "id": "soilhealth",
+      "hi": "मृदा स्वास्थ्य कार्ड",
+      "en": "Soil Health Card",
+      "benefitHi": "मिट्टी की जांच कर पोषक तत्वों और खाद की सही मात्रा की सलाह।",
+      "benefitEn": "Free soil testing with nutrient and fertilizer recommendations.",
+      "categories": ["fruit", "flower", "vegetable", "spice"],
+      "url": "https://soilhealth.dac.gov.in"
+    },
+    {
+      "id": "nbm",
+      "hi": "राष्ट्रीय बांस मिशन",
+      "en": "National Bamboo Mission",
+      "benefitHi": "निजी भूमि पर बांस रोपण, नर्सरी और बांस आधारित उद्यम के लिए सहायता।",
+      "benefitEn": "Support for bamboo plantation on private land, nurseries and bamboo-based enterprises.",
+      "categories": ["forestry"],
+      "url": "https://nbm.nic.in"
+    },
+    {
+      "id": "enam",
+      "hi": "ई-नाम (राष्ट्रीय कृषि बाजार)",
+      "en": "e-NAM (National Agriculture Market)",
+      "benefitHi": "ऑनलाइन मंडी में उपज बेचें और देशभर के भाव देखें।",
+      "benefitEn": "Sell produce on the online mandi and compare prices across markets.",
+      "categories": ["fruit", "vegetable", "spice"],
+      "url": "https://enam.gov.in"
+    },
+    {
+      "id": "kusum",
+      "hi": "पीएम-कुसुम (सोलर पंप)",
+      "en": "PM-KUSUM (solar pumps)",
+      "benefitHi": "सिंचाई के लिए सोलर पंप पर अनुदान।",
+      "benefitEn": "Subsidy on solar pumps for irrigation.",
+      "categories": [],
+      "url": "https://pmkusum.mnre.gov.in"
+    },
+    {
+      "id": "aif",
+      "hi": "कृषि अवसंरचना कोष (AIF)",
+      "en": "Agriculture Infrastructure Fund (AIF)",
+      "benefitHi": "कोल्ड स्टोरेज, गोदाम, ग्रेडिंग-पैकिंग इकाई के लिए ब्याज छूट वाला ऋण।",
+      "benefitEn": "Interest-subvented loans for cold storage, warehouses and grading/packing units.",
+      "categories": ["fruit", "vegetable", "spice"],
+      "url": "https://agriinfra.dac.gov.in"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "_note": "Starter data for the 2026 wall calendar. Holidays and Hindu month names must be checked against the official MGUVV / Government of Chhattisgarh calendar and completed before release.",
+  "year": 2026,
+  "university": {
+    "hi": "महात्मा गांधी उद्यानिकी एवं वानिकी विश्वविद्यालय, दुर्ग",
+    "en": "Mahatma Gandhi University of Horticulture and Forestry, Durg",
+    "website": "https://www.mguvv.ac.in",
+    "infoUrl": "https://mguvv.ac.in/info/"
+  },
+  "podcast": {
+    "hi": "प्रकृति की पाठशाला - द ग्रीन पॉडकास्ट",
+    "en": "Prakriti Ki Pathshala - The Green Podcast",
+    "_note": "Each wall-calendar QR code points to a category page. Replace these URLs with the exact QR targets.",
+    "links": {
+      "fruit": "https://mguvv.ac.in/info/",
+      "flower": "https://mguvv.ac.in/info/",
+      "vegetable": "https://mguvv.ac.in/info/",
+      "spice": "https://mguvv.ac.in/info/",
+      "forestry": "https://mguvv.ac.in/info/",
+      "scheme": "https://mguvv.ac.in/info/"
+    }
+  },
+  "hinduMonths": {
+    "1": "पौष - माघ",
+    "2": "माघ - फाल्गुन",
+    "3": "फाल्गुन - चैत्र",
+    "4": "चैत्र - वैशाख",
+    "5": "वैशाख - ज्येष्ठ",
+    "6": "ज्येष्ठ - आषाढ़",
+    "7": "आषाढ़ - श्रावण",
+    "8": "श्रावण - भाद्रपद",
+    "9": "भाद्रपद - आश्विन",
+    "10": "आश्विन - कार्तिक",
+    "11": "कार्तिक - मार्गशीर्ष",
+    "12": "मार्गशीर्ष - पौष"
+  },
+  "holidays": [
+    { "date": "2026-01-26", "type": "public", "hi": "गणतंत्र दिवस", "en": "Republic Day" },
+    { "date": "2026-03-04", "type": "public", "hi": "होली", "en": "Holi" },
+    { "date": "2026-08-15", "type": "public", "hi": "स्वतंत्रता दिवस", "en": "Independence Day" },
+    { "date": "2026-10-02", "type": "public", "hi": "महात्मा गांधी का जन्मदिवस", "en": "Gandhi Jayanti" },
+    { "date": "2026-10-10", "type": "optional", "hi": "सर्व पितृमोक्ष अमावस्या", "en": "Sarva Pitru Moksha Amavasya" },
+    { "date": "2026-10-11", "type": "optional", "hi": "अग्रसेन जयंती", "en": "Agrasen Jayanti" },
+    { "date": "2026-10-19", "type": "optional", "hi": "दशहरा (महाअष्टमी)", "en": "Dussehra (Maha Ashtami)" },
+    { "date": "2026-10-20", "type": "public", "hi": "दशहरा (विजयादशमी)", "en": "Dussehra (Vijayadashami)" },
+    { "date": "2026-10-26", "type": "optional", "hi": "महर्षि वाल्मीकि जयंती", "en": "Maharishi Valmiki Jayanti" },
+    { "date": "2026-10-29", "type": "optional", "hi": "करवा चौथ व्रत", "en": "Karva Chauth" },
+    { "date": "2026-11-01", "type": "public", "hi": "छत्तीसगढ़ राज्योत्सव", "en": "Chhattisgarh Rajyotsava" },
+    { "date": "2026-11-08", "type": "public", "hi": "दीपावली", "en": "Diwali" },
+    { "date": "2026-12-18", "type": "public", "hi": "गुरु घासीदास जयंती", "en": "Guru Ghasidas Jayanti" },
+    { "date": "2026-12-25", "type": "public", "hi": "क्रिसमस", "en": "Christmas" }
+  ]
+}
