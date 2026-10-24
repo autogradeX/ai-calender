@@ -1,7 +1,7 @@
 {
   "name": "ai-calendar",
   "version": "1.0.0",
-  "description": "A calendar with a Claude-powered natural-language scheduling assistant",
+  "description": "Kisan AI Calendar: an installable farm calendar for horticulture growers with an Azure OpenAI assistant",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -16,7 +16,7 @@
   },
   "homepage": "https://github.com/autogradeX/ai-calender#readme",
   "dependencies": {
-    "@anthropic-ai/sdk": "^1.3.0"
+    "openai": "^7.43.0"
   },
   "type": "module",
   "engines": {

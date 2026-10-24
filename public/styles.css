@@ -424,10 +424,148 @@ dialog label.inline input { width: auto; }
 .spacer { flex: 1; }
 .form-error { color: var(--holiday); margin: 0; }
 
-/* ---------- Small screens ---------- */
-@media (max-width: 1000px) {
-  .app { grid-template-columns: 1fr; padding: 10px; }
+/* ---------- App chrome: install, offline, bottom nav, FAB ---------- */
+.btn.install { background: #f2c94c; border-color: #f2c94c; color: #3a2c00; font-weight: 700; }
+.btn.install:hover { filter: brightness(1.05); background: #f2c94c; }
+.offline-banner {
+  background: #fff4cc;
+  color: #5c4500;
+  padding: 8px 16px;
+  font-size: 13.5px;
+  text-align: center;
 }
+.bottom-nav, .mobile-only { display: none; }
+.ios-steps { margin: 0; padding-left: 20px; display: grid; gap: 8px; }
+
+/* ---------- Phones and tablets: app-style screens ---------- */
+@media (max-width: 1000px) {
+  :root { --nav-h: 64px; }
+  body {
+    padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom));
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior-y: none;
+  }
+  .desktop-only { display: none !important; }
+  .mobile-only { display: inline-flex; }
+
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    flex-wrap: nowrap;
+    padding: calc(8px + env(safe-area-inset-top)) 12px 8px;
+  }
+  .brand img { width: 30px; height: 30px; }
+  .brand-title { font-size: 17px; }
+  .brand-sub { display: none; }
+  .topbar .btn { padding: 6px 12px; font-size: 13px; }
+
+  .app { display: block; padding: 10px; }
+  .sidebar { display: contents; }
+  .panel, .calendar { margin-bottom: 12px; }
+
+  /* Only the current tab's sections are shown. */
+  .view { display: none !important; }
+  body[data-view="calendar"] .view-calendar,
+  body[data-view="work"] .view-work,
+  body[data-view="schemes"] .view-schemes,
+  body[data-view="ai"] .view-ai { display: flex !important; flex-direction: column; }
+  .panel.view, .calendar.view { flex-direction: column; }
+  body[data-view="calendar"] .fab.view-calendar { display: inline-flex !important; }
+
+  .advisory-panel { flex-direction: column; }
+  .advisory-list { max-height: none; overflow: visible; }
+  body[data-view="schemes"] .advisory-tabs { display: none; }
+  .tip-actions .link-btn { padding: 6px 0; }
+
+  /* The chat fills the screen between the top bar and the bottom nav. */
+  body[data-view="ai"] .app { padding: 0; }
+  body[data-view="ai"] .assistant-panel {
+    flex-direction: column;
+    margin: 0;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    height: calc(100dvh - 56px - var(--nav-h) - env(safe-area-inset-bottom) - env(safe-area-inset-top));
+  }
+  .chat { height: auto; flex: 1; min-height: 0; }
+  .chat-form { padding-top: 6px; }
+  .chat-form input { font-size: 16px; padding: 10px 12px; } /* 16px stops iOS zooming in */
+
+  .bottom-nav {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 30;
+    height: calc(var(--nav-h) + env(safe-area-inset-bottom));
+    padding-bottom: env(safe-area-inset-bottom);
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    box-shadow: 0 -2px 12px rgb(0 0 0 / .06);
+  }
+  .bottom-nav a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .bottom-nav .nav-icon {
+    font-size: 20px;
+    line-height: 1;
+    padding: 4px 16px;
+    border-radius: 999px;
+  }
+  .bottom-nav a[aria-current="page"] { color: var(--primary); }
+  .bottom-nav a[aria-current="page"] .nav-icon { background: color-mix(in srgb, var(--primary) 16%, transparent); }
+
+  .fab {
+    position: fixed;
+    right: 16px;
+    bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 14px);
+    z-index: 25;
+    align-items: center;
+    gap: 6px;
+    border: none;
+    border-radius: 18px;
+    padding: 14px 18px;
+    background: var(--leaf);
+    color: #fff;
+    font: inherit;
+    font-weight: 700;
+    box-shadow: 0 6px 18px rgb(0 0 0 / .22);
+    cursor: pointer;
+    flex-direction: row !important;
+    white-space: nowrap;
+  }
+  /* Room so the last part of the calendar can scroll clear of the button. */
+  body[data-view="calendar"] .app { padding-bottom: 84px; }
+
+  /* Dialogs slide up from the bottom like native sheets. */
+  dialog {
+    margin: auto 0 0;
+    width: 100%;
+    max-width: 100%;
+    max-height: 92dvh;
+    border-radius: 20px 20px 0 0;
+    padding: 18px 16px calc(18px + env(safe-area-inset-bottom));
+    animation: sheet-up .2s ease-out;
+  }
+  dialog input, dialog select, dialog textarea { font-size: 16px; padding: 10px 12px; }
+  .dialog-actions .btn { padding: 10px 18px; }
+}
+@keyframes sheet-up { from { transform: translateY(40px); } }
+
+@media (display-mode: standalone) {
+  .btn.install { display: none !important; }
+}
+
+/* ---------- Small screens ---------- */
 @media (max-width: 640px) {
   .banner { grid-template-columns: auto 1fr; padding: 14px; }
   .featured { grid-row: 2; grid-column: 1 / -1; justify-self: start; }
@@ -439,5 +577,5 @@ dialog label.inline input { width: auto; }
   .holiday-name { display: none; }
   .category-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .weekdays div { padding: 8px 2px; font-size: 13px; }
-  .brand-sub { display: none; }
+  .uni-footer { font-size: 13px; }
 }

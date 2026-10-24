@@ -1,6 +1,6 @@
 # किसान AI कैलेंडर · Kisan AI Calendar
 
-A farm calendar for horticulture growers, modelled on the 2026 wall calendar of **महात्मा गांधी उद्यानिकी एवं वानिकी विश्वविद्यालय, दुर्ग** (Mahatma Gandhi University of Horticulture and Forestry, Durg; [mguvv.ac.in](https://www.mguvv.ac.in)), with a Claude-powered assistant, **किसान साथी (Kisan Saathi)**, that turns crop knowledge into dated tasks on the farmer's calendar.
+A farm calendar for horticulture growers, modelled on the 2026 wall calendar of **महात्मा गांधी उद्यानिकी एवं वानिकी विश्वविद्यालय, दुर्ग** (Mahatma Gandhi University of Horticulture and Forestry, Durg; [mguvv.ac.in](https://www.mguvv.ac.in)), with an AI assistant powered by Azure OpenAI, **किसान साथी (Kisan Saathi)**, that turns crop knowledge into dated tasks on the farmer's calendar.
 
 It covers the same six areas as the wall calendar's QR row: **फल** (fruits), **फूल** (flowers), **सब्जी** (vegetables), **मसाले** (spices), **वानिकी** (forestry) and **सरकारी योजनाएं** (government schemes).
 
@@ -11,7 +11,8 @@ It covers the same six areas as the wall calendar's QR row: **फल** (fruits),
 | "What should I do on my farm this month?" | Each month shows Chhattisgarh-specific work for fruits, flowers, vegetables, spices and forestry, plus a featured crop. One tap adds a task to the calendar or asks the AI for details. |
 | "Plan my whole crop" | **🌱 फसल योजना (Crop plan):** enter crop, sowing/transplanting date, area and district. Kisan Saathi schedules land preparation, nursery, transplanting, fertilizer doses, irrigation, weeding, pest checks and harvest as dated tasks, with doses in the notes. |
 | Questions in their own words | Chat in Hindi, Chhattisgarhi or English. Replies come in the farmer's language. |
-| Low literacy / small phones | 🎤 voice input (Hindi speech recognition) and 🔈 read-aloud replies, large dates, mobile layout. |
+| Low literacy / small phones | 🎤 voice input (Hindi speech recognition) and 🔈 read-aloud replies, large dates. |
+| Use it like a phone app | Installable PWA with an **📲 ऐप इंस्टॉल करें** button, home-screen icon, full-screen app with bottom tabs (कैलेंडर · कृषि कार्य · किसान साथी · योजनाएं), swipe between months, and offline viewing of saved tasks and advice. |
 | Government support | Scheme cards (MIDH, PMKSY drip/sprinkler, PMFBY, PM-KISAN, KCC, Soil Health Card, National Bamboo Mission, e-NAM, PM-KUSUM, AIF) with portal links, "Ask AI" and "+ Reminder". The assistant is told not to invent amounts or deadlines. |
 | Mistakes by the AI | Every AI change shows what was added, changed or removed, with a one-tap **↶ वापस लें (Undo)**. |
 | Festivals and holidays | Public holidays in red and optional holidays in bold, listed under the month as on the printed calendar. The assistant warns when a task falls on one. |
@@ -24,16 +25,22 @@ Requires Node.js 20 or newer.
 
 ```bash
 npm install
-export ANTHROPIC_API_KEY=sk-ant-...   # get one at https://console.anthropic.com
+export AZURE_OPENAI_ENDPOINT=https://<your-resource>.openai.azure.com/
+export AZURE_OPENAI_API_KEY=<key from Azure portal → your resource → Keys and Endpoint>
+export AZURE_OPENAI_DEPLOYMENT=<your model deployment name, e.g. gpt-4o>
 npm start
 ```
 
-Open http://localhost:3000. The calendar, monthly advice and schemes work without an API key. Only Kisan Saathi needs one.
+Open http://localhost:3000. The calendar, monthly advice and schemes work without Azure settings. Only Kisan Saathi needs them.
+
+The deployment must be a model that supports **structured outputs** (JSON schema), for example `gpt-4o` (2024-08-06 or later), `gpt-4o-mini`, `gpt-4.1` or `gpt-5`.
 
 | Variable | Default | Purpose |
 |---|---|---|
-| `ANTHROPIC_API_KEY` | (none) | Claude API key for the assistant |
-| `CLAUDE_MODEL` | `claude-opus-5-5` | Model used by the assistant |
+| `AZURE_OPENAI_ENDPOINT` | (none) | Azure OpenAI resource endpoint |
+| `AZURE_OPENAI_API_KEY` | (none) | Azure OpenAI key |
+| `AZURE_OPENAI_DEPLOYMENT` | (none) | Name of your model deployment |
+| `OPENAI_API_VERSION` | `2024-10-21` | Azure OpenAI API version |
 | `PORT` | `3000` | HTTP port |
 | `DATA_FILE` | `data/events.json` | Where farmers' tasks are stored |
 
@@ -43,13 +50,16 @@ The repo includes a `Dockerfile` and a `deploy.sh` script.
 
 ```bash
 gcloud auth login
-PROJECT_ID=your-project-id ./deploy.sh
+PROJECT_ID=your-project-id \
+AZURE_OPENAI_ENDPOINT=https://<your-resource>.openai.azure.com/ \
+AZURE_OPENAI_DEPLOYMENT=gpt-4o \
+./deploy.sh
 ```
 
 The script, which is safe to re-run:
 1. enables Cloud Run, Cloud Build, Artifact Registry, Secret Manager and Cloud Storage;
 2. creates a bucket `<project>-kisan-calendar-data` and mounts it at `/data`, so saved tasks survive restarts and redeploys;
-3. stores your Anthropic API key in Secret Manager (asked for on the first run only) and passes it in as `ANTHROPIC_API_KEY`;
+3. stores your Azure OpenAI key in Secret Manager (asked for on the first run only) and passes it in as `AZURE_OPENAI_API_KEY`, with the endpoint and deployment as environment variables;
 4. builds the image with Cloud Build and deploys the `kisan-ai-calendar` service to `asia-south1` (Mumbai), then prints the URL.
 
 Override `REGION`, `SERVICE`, `BUCKET` or `SECRET` with environment variables if needed.
@@ -57,15 +67,20 @@ Override `REGION`, `SERVICE`, `BUCKET` or `SECRET` with environment variables if
 Things to know:
 - **One shared calendar.** There are no user accounts yet: everyone who opens the URL sees and edits the same tasks. Fine for a demo or a single farm or office; per-farmer calendars need login or per-device storage.
 - **One instance.** Tasks live in a single JSON file, so the service runs with `--max-instances 1`. That comfortably serves a demo or pilot; a larger rollout should move storage to Firestore.
-- **Public AI endpoint.** The URL is public (`--allow-unauthenticated`), so anyone can use the assistant on your API key. Set a spend limit in the Anthropic Console, or remove `--allow-unauthenticated` to restrict access.
+- **Public AI endpoint.** The URL is public (`--allow-unauthenticated`), so anyone can use the assistant on your API key. Set a budget alert on the Azure OpenAI resource, or remove `--allow-unauthenticated` to restrict access.
 - **Health check:** `GET /healthz`.
 
 To try the container locally:
 
 ```bash
 docker build -t kisan-ai-calendar .
-docker run -p 8080:8080 -e ANTHROPIC_API_KEY=sk-ant-... kisan-ai-calendar
+docker run -p 8080:8080 \
+  -e AZURE_OPENAI_ENDPOINT=https://<your-resource>.openai.azure.com/ \
+  -e AZURE_OPENAI_API_KEY=... -e AZURE_OPENAI_DEPLOYMENT=gpt-4o \
+  kisan-ai-calendar
 ```
+
+Cloud Run serves over HTTPS, which the install button and offline mode need. On Android (Chrome) the **📲 ऐप इंस्टॉल करें** button installs the app directly; on iPhone it shows the Safari "Add to Home Screen" steps.
 
 ## Content to review before release
 
@@ -82,10 +97,11 @@ The assistant receives this month's and next month's advice, upcoming holidays a
 
 ## How it works
 
-- `server.js`: a small Node HTTP server (one dependency, the Anthropic SDK) that serves the app, stores tasks and calls Claude.
+- `server.js`: a small Node HTTP server (one dependency, the `openai` SDK's `AzureOpenAI` client) that serves the app, stores tasks and calls Azure OpenAI.
 - `public/`: the frontend in plain HTML, CSS and JavaScript, with no build step.
-- For each chat message the server sends Claude the date, the season's advice, upcoming holidays, the farmer's calendar and recent chat turns. Claude replies in a fixed JSON format (structured outputs) with a message and a list of `create` / `update` / `delete` actions. The server validates and applies them and returns what changed, so the app can show and undo it.
-- Requests use the API's default refusal fallback (`fallbacks: "default"`).
+- `public/manifest.webmanifest`, `public/sw.js`, `public/icons/`: the installable-app pieces. The service worker caches the app and the last-seen tasks and advice for offline use. Bump `VERSION` in `sw.js` when you change app files.
+- For each chat message the server sends the model the date, the season's advice, upcoming holidays, the farmer's calendar and recent chat turns. The model replies in a fixed JSON format (structured outputs, strict JSON schema) with a message and a list of `create` / `update` / `delete` actions. The server validates and applies them and returns what changed, so the app can show and undo it.
+- If Azure's content filter blocks a message, the farmer gets a polite "can't help with that" instead of an error.
 
 ### API
 

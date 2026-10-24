@@ -3,9 +3,12 @@
 #
 # Usage:
 #   gcloud auth login
-#   PROJECT_ID=my-project ./deploy.sh
+#   PROJECT_ID=my-project \
+#   AZURE_OPENAI_ENDPOINT=https://my-resource.openai.azure.com/ \
+#   AZURE_OPENAI_DEPLOYMENT=gpt-4o \
+#   ./deploy.sh
 #
-# First run: you'll be asked for your Anthropic API key, which is stored in
+# First run: you'll be asked for your Azure OpenAI API key, which is stored in
 # Secret Manager (never in the image or the service config).
 set -euo pipefail
 
@@ -13,7 +16,10 @@ PROJECT_ID="${PROJECT_ID:?Set PROJECT_ID to your Google Cloud project id}"
 REGION="${REGION:-asia-south1}"            # Mumbai, closest region to Chhattisgarh
 SERVICE="${SERVICE:-kisan-ai-calendar}"
 BUCKET="${BUCKET:-${PROJECT_ID}-kisan-calendar-data}"
-SECRET="${SECRET:-anthropic-api-key}"
+SECRET="${SECRET:-azure-openai-api-key}"
+AZURE_OPENAI_ENDPOINT="${AZURE_OPENAI_ENDPOINT:?Set AZURE_OPENAI_ENDPOINT, e.g. https://my-resource.openai.azure.com/}"
+AZURE_OPENAI_DEPLOYMENT="${AZURE_OPENAI_DEPLOYMENT:?Set AZURE_OPENAI_DEPLOYMENT to your model deployment name, e.g. gpt-4o}"
+OPENAI_API_VERSION="${OPENAI_API_VERSION:-2024-10-21}"
 
 gcloud config set project "$PROJECT_ID" >/dev/null
 
@@ -31,9 +37,9 @@ fi
 gcloud storage buckets add-iam-policy-binding "gs://$BUCKET" \
   --member="serviceAccount:$RUN_SA" --role=roles/storage.objectUser >/dev/null
 
-echo "==> Anthropic API key in Secret Manager: $SECRET"
+echo "==> Azure OpenAI API key in Secret Manager: $SECRET"
 if ! gcloud secrets describe "$SECRET" >/dev/null 2>&1; then
-  read -rsp "Paste your Anthropic API key: " KEY; echo
+  read -rsp "Paste your Azure OpenAI API key: " KEY; echo
   printf '%s' "$KEY" | gcloud secrets create "$SECRET" --data-file=- --replication-policy=automatic
 fi
 gcloud secrets add-iam-policy-binding "$SECRET" \
@@ -50,8 +56,8 @@ gcloud run deploy "$SERVICE" \
   --memory 512Mi \
   --max-instances 1 \
   --timeout 300 \
-  --set-secrets "ANTHROPIC_API_KEY=${SECRET}:latest" \
-  --set-env-vars "DATA_FILE=/data/events.json" \
+  --set-secrets "AZURE_OPENAI_API_KEY=${SECRET}:latest" \
+  --set-env-vars "DATA_FILE=/data/events.json,AZURE_OPENAI_ENDPOINT=${AZURE_OPENAI_ENDPOINT},AZURE_OPENAI_DEPLOYMENT=${AZURE_OPENAI_DEPLOYMENT},OPENAI_API_VERSION=${OPENAI_API_VERSION}" \
   --add-volume "name=data,type=cloud-storage,bucket=${BUCKET},mount-options=uid=1000;gid=1000" \
   --add-volume-mount "volume=data,mount-path=/data"
 

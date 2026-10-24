@@ -2,29 +2,39 @@
 <html lang="hi">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>किसान AI कैलेंडर</title>
   <meta name="description" content="उद्यानिकी किसानों के लिए AI कैलेंडर: फल, फूल, सब्जी, मसाले, वानिकी और सरकारी योजनाएं">
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#0b4757">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="किसान कैलेंडर">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header class="topbar">
     <div class="brand">
-      <img src="favicon.svg" alt="" width="34" height="34">
+      <img src="/icons/icon.svg" alt="" width="34" height="34">
       <div>
         <div class="brand-title" data-i18n="appName"></div>
         <div class="brand-sub" data-i18n="university"></div>
       </div>
     </div>
     <div class="topbar-actions">
-      <button class="btn light" id="crop-plan-btn" data-i18n="cropPlan"></button>
+      <button class="btn install" id="install-btn" hidden data-i18n="install"></button>
+      <button class="btn light desktop-only" id="crop-plan-btn" data-i18n="cropPlan"></button>
       <button class="btn light" id="lang-toggle" aria-label="Language">English</button>
     </div>
   </header>
 
+  <div class="offline-banner" id="offline-banner" hidden data-i18n="offline"></div>
+
   <div class="app">
-    <main class="calendar">
+    <main class="calendar view view-calendar">
       <section class="banner">
         <div class="year-badge" id="year-badge"></div>
         <div class="featured" id="featured" title="">
@@ -61,7 +71,7 @@
     </main>
 
     <aside class="sidebar">
-      <section class="panel day-panel">
+      <section class="panel day-panel view view-calendar">
         <div class="panel-head">
           <h2 id="day-label"></h2>
           <button class="btn small" id="new-event" data-i18n="newEvent"></button>
@@ -69,7 +79,7 @@
         <ul class="agenda" id="agenda"></ul>
       </section>
 
-      <section class="panel advisory-panel">
+      <section class="panel advisory-panel view view-work view-schemes">
         <div class="panel-head">
           <h2 id="advisory-title"></h2>
           <a class="more-link" id="advisory-more" target="_blank" rel="noopener" data-i18n="learnMore"></a>
@@ -78,7 +88,7 @@
         <ul class="advisory-list" id="advisory-list"></ul>
       </section>
 
-      <section class="panel assistant-panel">
+      <section class="panel assistant-panel view view-ai">
         <div class="panel-head">
           <h2 data-i18n="assistant"></h2>
           <button class="icon-btn small" id="speak-toggle" aria-pressed="false" title=""></button>
@@ -93,6 +103,30 @@
       </section>
     </aside>
   </div>
+
+  <button class="fab mobile-only view view-calendar" id="fab-plan" type="button">🌱 <span data-i18n="cropPlanShort"></span></button>
+
+  <nav class="bottom-nav" id="bottom-nav" aria-label="Main">
+    <a href="#calendar" data-view="calendar"><span class="nav-icon">📅</span><span data-i18n="navCalendar"></span></a>
+    <a href="#work" data-view="work"><span class="nav-icon">🌱</span><span data-i18n="navWork"></span></a>
+    <a href="#ai" data-view="ai"><span class="nav-icon">🤖</span><span data-i18n="navAi"></span></a>
+    <a href="#schemes" data-view="schemes"><span class="nav-icon">📜</span><span data-i18n="navSchemes"></span></a>
+  </nav>
+
+  <dialog id="ios-install-dialog">
+    <form method="dialog">
+      <h2 data-i18n="installTitle"></h2>
+      <ol class="ios-steps">
+        <li data-i18n="iosStep1"></li>
+        <li data-i18n="iosStep2"></li>
+        <li data-i18n="iosStep3"></li>
+      </ol>
+      <div class="dialog-actions">
+        <span class="spacer"></span>
+        <button class="btn primary" value="ok" data-i18n="ok"></button>
+      </div>
+    </form>
+  </dialog>
 
   <dialog id="event-dialog">
     <form method="dialog" id="event-form">

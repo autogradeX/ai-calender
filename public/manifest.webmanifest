@@ -1,0 +1,25 @@
+{
+  "id": "/",
+  "name": "किसान AI कैलेंडर",
+  "short_name": "किसान कैलेंडर",
+  "description": "उद्यानिकी किसानों के लिए AI कैलेंडर: फल, फूल, सब्जी, मसाले, वानिकी और सरकारी योजनाएं",
+  "lang": "hi",
+  "dir": "ltr",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4f1e8",
+  "theme_color": "#0b4757",
+  "categories": ["productivity", "education", "lifestyle"],
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "किसान साथी (AI)", "short_name": "AI", "url": "/#ai", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "इस माह के कृषि कार्य", "short_name": "कृषि कार्य", "url": "/#work", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "सरकारी योजनाएं", "short_name": "योजनाएं", "url": "/#schemes", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}

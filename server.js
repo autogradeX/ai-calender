@@ -3,14 +3,17 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
-import Anthropic from "@anthropic-ai/sdk";
+import { AzureOpenAI, APIError, AuthenticationError, BadRequestError, NotFoundError, RateLimitError } from "openai";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC_DIR = path.join(here, "public");
 const KNOWLEDGE_DIR = path.join(here, "knowledge");
 const DATA_FILE = process.env.DATA_FILE || path.join(here, "data", "events.json");
 const PORT = Number(process.env.PORT) || 3000;
-const MODEL = process.env.CLAUDE_MODEL || "claude-opus-5-5";
+// Azure OpenAI: the deployment must be a model that supports structured outputs
+// (for example gpt-4o 2024-08-06 or later, gpt-4.1, gpt-5).
+const AZURE_DEPLOYMENT = process.env.AZURE_OPENAI_DEPLOYMENT;
+const AZURE_API_VERSION = process.env.OPENAI_API_VERSION || "2024-10-21";
 
 // Farm knowledge shipped with the app: holidays, month-wise advisory, schemes.
 const readKnowledge = async (name) => JSON.parse(await fs.readFile(path.join(KNOWLEDGE_DIR, name), "utf8"));
@@ -26,6 +29,8 @@ const MIME = {
   ".js": "text/javascript; charset=utf-8",
   ".svg": "image/svg+xml",
   ".json": "application/json",
+  ".webmanifest": "application/manifest+json",
+  ".png": "image/png",
 };
 
 // ---------- Event store (a JSON file on disk) ----------
@@ -99,11 +104,17 @@ function restoredId(id) {
   return typeof id === "string" && /^[0-9a-f-]{36}$/i.test(id) ? id : null;
 }
 
-// ---------- Claude assistant ----------
+// ---------- AI assistant (Azure OpenAI) ----------
+
+const NOT_CONFIGURED =
+  "AI सहायक चालू नहीं है। Azure OpenAI सेटिंग्स जोड़ें। / AI assistant is not configured. Set AZURE_OPENAI_ENDPOINT, AZURE_OPENAI_API_KEY and AZURE_OPENAI_DEPLOYMENT.";
 
 let client = null;
 function getClient() {
-  if (!client) client = new Anthropic();
+  if (!process.env.AZURE_OPENAI_ENDPOINT || !process.env.AZURE_OPENAI_API_KEY || !AZURE_DEPLOYMENT) {
+    throw new HttpError(503, NOT_CONFIGURED);
+  }
+  if (!client) client = new AzureOpenAI({ apiVersion: AZURE_API_VERSION, deployment: AZURE_DEPLOYMENT });
   return client;
 }
 
@@ -155,7 +166,7 @@ const RESPONSE_SCHEMA = {
           allDay: { type: ["boolean", "null"] },
           location: nullableString,
           notes: nullableString,
-          category: { type: ["string", "null"], enum: [...CATEGORIES, null] },
+          category: { anyOf: [{ type: "string", enum: CATEGORIES }, { type: "null" }] },
         },
         required: ["type", "id", "title", "start", "end", "allDay", "location", "notes", "category"],
         additionalProperties: false,
@@ -209,6 +220,8 @@ function describeSeason(today) {
   return lines.join("\n");
 }
 
+const REFUSAL_REPLY = "माफ़ कीजिए, मैं इस अनुरोध में मदद नहीं कर सकता। / Sorry, I can't help with that request.";
+
 async function askAssistant({ message, history, now, timezone, language }) {
   const events = await loadEvents();
   const today = /^\d{4}-\d{2}-\d{2}/.test(now) ? now.slice(0, 10) : new Date().toISOString().slice(0, 10);
@@ -226,30 +239,28 @@ ${describeCalendar(events, today)}`;
     .filter((t) => (t.role === "user" || t.role === "assistant") && typeof t.content === "string" && t.content)
     .map((t) => ({ role: t.role, content: t.content }));
 
-  const response = await getClient().beta.messages.create({
-    model: MODEL,
-    max_tokens: 16000,
-    betas: ["server-side-fallback-2026-07-01"],
-    fallbacks: "default",
-    system: SYSTEM_PROMPT,
-    output_config: {
-      effort: "medium",
-      format: { type: "json_schema", schema: RESPONSE_SCHEMA },
+  const completion = await getClient().chat.completions.create({
+    model: AZURE_DEPLOYMENT,
+    messages: [
+      { role: "system", content: SYSTEM_PROMPT },
+      ...priorTurns,
+      { role: "user", content: `${context}\n\nUser request: ${message}` },
+    ],
+    response_format: {
+      type: "json_schema",
+      json_schema: { name: "calendar_reply", strict: true, schema: RESPONSE_SCHEMA },
     },
-    messages: [...priorTurns, { role: "user", content: `${context}\n\nUser request: ${message}` }],
   });
 
-  if (response.stop_reason === "refusal") {
-    return { reply: "माफ़ कीजिए, मैं इस अनुरोध में मदद नहीं कर सकता। / Sorry, I can't help with that request.", applied: [], events };
+  const choice = completion.choices[0];
+  if (!choice || choice.finish_reason === "content_filter" || choice.message.refusal) {
+    return { reply: REFUSAL_REPLY, applied: [], events };
   }
-  if (response.stop_reason === "max_tokens") {
+  if (choice.finish_reason === "length") {
     throw new HttpError(502, "जवाब अधूरा रह गया, कृपया छोटा अनुरोध करें। / The response was cut off. Please try a shorter request.");
   }
 
-  const text = response.content
-    .filter((b) => b.type === "text")
-    .map((b) => b.text)
-    .join("");
+  const text = choice.message.content ?? "";
   let parsed;
   try {
     parsed = JSON.parse(text);
@@ -257,7 +268,7 @@ ${describeCalendar(events, today)}`;
     throw new HttpError(502, "The assistant returned an unreadable response.");
   }
 
-  // Re-read the store so edits made while Claude was thinking are not lost.
+  // Re-read the store so edits made while the model was thinking are not lost.
   const { applied, errors, events: updated } = await withStore((current) => {
     const result = applyActions(current, parsed.actions ?? []);
     return { save: result.applied.length > 0, value: { ...result, events: current } };
@@ -331,7 +342,11 @@ async function serveStatic(req, res, pathname) {
   if (!filePath.startsWith(PUBLIC_DIR + path.sep)) throw new HttpError(403, "Forbidden");
   try {
     const data = await fs.readFile(filePath);
-    res.writeHead(200, { "Content-Type": MIME[path.extname(filePath)] || "application/octet-stream" });
+    res.writeHead(200, {
+      "Content-Type": MIME[path.extname(filePath)] || "application/octet-stream",
+      // Revalidate on every load so app updates (and the service worker) reach phones quickly.
+      "Cache-Control": "no-cache",
+    });
     res.end(data);
   } catch {
     throw new HttpError(404, "Not found");
@@ -403,18 +418,20 @@ const server = http.createServer(async (req, res) => {
   } catch (err) {
     let status = err instanceof HttpError ? err.status : 500;
     let message = err instanceof HttpError ? err.message : "Internal server error";
-    if (err instanceof Anthropic.AuthenticationError) {
+    if (err instanceof AuthenticationError || err instanceof NotFoundError) {
+      // 401: wrong key; 404: wrong endpoint or deployment name.
       status = 503;
-      message = "AI सहायक चालू नहीं है। ANTHROPIC_API_KEY सेट करें। / AI assistant is not configured. Set ANTHROPIC_API_KEY and restart the server.";
-    } else if (err instanceof Anthropic.RateLimitError) {
+      message = NOT_CONFIGURED;
+    } else if (err instanceof RateLimitError) {
       status = 429;
       message = "AI सहायक व्यस्त है, थोड़ी देर बाद कोशिश करें। / The AI assistant is busy. Please try again in a moment.";
-    } else if (err instanceof Anthropic.APIError) {
+    } else if (err instanceof BadRequestError && err.code === "content_filter") {
+      // Azure's content filter blocked the prompt itself.
+      if (!res.headersSent) sendJson(res, 200, { reply: REFUSAL_REPLY, applied: [], events: await loadEvents() });
+      return;
+    } else if (err instanceof APIError) {
       status = 502;
       message = `AI assistant error: ${err.message}`;
-    } else if (err instanceof Error && /credentials|apiKey|authToken/i.test(err.message)) {
-      status = 503;
-      message = "AI सहायक चालू नहीं है। ANTHROPIC_API_KEY सेट करें। / AI assistant is not configured. Set ANTHROPIC_API_KEY and restart the server.";
     }
     if (status >= 500) console.error(err);
     if (!res.headersSent) sendJson(res, status, { error: message });

@@ -88,6 +88,18 @@ const STRINGS = {
     planPrompt: ({ crop, date, area, district }) =>
       `मेरी फसल योजना बनाइए और सभी मुख्य कार्य कैलेंडर में जोड़िए। फसल: ${crop}, बुवाई/रोपाई तिथि: ${date}, क्षेत्रफल: ${area} एकड़, ज़िला: ${district}।`,
     loadError: "कैलेंडर लोड नहीं हो सका",
+    install: "📲 ऐप इंस्टॉल करें",
+    offline: "आप ऑफ़लाइन हैं। सहेजी गई जानकारी दिख रही है; बदलाव और AI के लिए इंटरनेट चाहिए।",
+    cropPlanShort: "फसल योजना",
+    navCalendar: "कैलेंडर",
+    navWork: "कृषि कार्य",
+    navAi: "किसान साथी",
+    navSchemes: "योजनाएं",
+    installTitle: "📲 ऐप को होम स्क्रीन पर जोड़ें",
+    iosStep1: "Safari में नीचे शेयर बटन (⬆️ वाला चौकोर) दबाएं।",
+    iosStep2: "सूची में “होम स्क्रीन में जोड़ें” (Add to Home Screen) चुनें।",
+    iosStep3: "“जोड़ें” (Add) दबाएं। किसान कैलेंडर आपकी होम स्क्रीन पर ऐप की तरह खुलेगा।",
+    ok: "ठीक है",
     categories: {
       fruit: "फल", flower: "फूल", vegetable: "सब्जी", spice: "मसाले",
       forestry: "वानिकी", scheme: "सरकारी योजनाएं", personal: "व्यक्तिगत",
@@ -155,6 +167,18 @@ const STRINGS = {
     planPrompt: ({ crop, date, area, district }) =>
       `Make a crop plan and add all key tasks to my calendar. Crop: ${crop}, sowing/transplanting date: ${date}, area: ${area} acres, district: ${district}.`,
     loadError: "Could not load the calendar",
+    install: "📲 Install app",
+    offline: "You're offline. Showing saved information; changes and the AI need internet.",
+    cropPlanShort: "Crop plan",
+    navCalendar: "Calendar",
+    navWork: "Farm work",
+    navAi: "Kisan Saathi",
+    navSchemes: "Schemes",
+    installTitle: "📲 Add the app to your home screen",
+    iosStep1: "In Safari, tap the Share button (the square with ⬆️).",
+    iosStep2: "Choose “Add to Home Screen”.",
+    iosStep3: "Tap “Add”. Kisan Calendar will open like an app from your home screen.",
+    ok: "OK",
     categories: {
       fruit: "Fruits", flower: "Flowers", vegetable: "Vegetables", spice: "Spices",
       forestry: "Forestry", scheme: "Govt schemes", personal: "Personal",
@@ -190,6 +214,8 @@ const state = {
   cursor: new Date(now.getFullYear(), now.getMonth(), 1),
   selected: toDateKey(now),
   category: "vegetable",
+  lastCropCategory: "vegetable",
+  view: "calendar",
   history: [],
   speak: false,
 };
@@ -404,20 +430,50 @@ function renderCategories() {
         el("span", { className: "emoji", textContent: emoji }),
         el("span", { className: "label", textContent: t().categories[id] }));
       tile.dataset.cat = id;
-      tile.addEventListener("click", () => selectCategory(id, true));
+      tile.addEventListener("click", () => selectCategory(id));
       return tile;
     }),
   );
 }
 
-function selectCategory(id, scroll) {
+function selectCategory(id) {
   state.category = id;
+  if (id !== "scheme") state.lastCropCategory = id;
   renderCategories();
   renderAdvisory();
-  if (scroll && window.matchMedia("(max-width: 1000px)").matches) {
-    document.querySelector(".advisory-panel").scrollIntoView({ behavior: "smooth" });
-  }
+  // On phones the advice and schemes each have their own screen.
+  if (isMobile()) goTo(id === "scheme" ? "schemes" : "work");
 }
+
+// ---------- Mobile screens (bottom navigation) ----------
+
+const VIEWS = ["calendar", "work", "ai", "schemes"];
+const isMobile = () => window.matchMedia("(max-width: 1000px)").matches;
+
+function showView(view) {
+  state.view = VIEWS.includes(view) ? view : "calendar";
+  document.body.dataset.view = state.view;
+  for (const link of document.querySelectorAll("#bottom-nav a")) {
+    if (link.dataset.view === state.view) link.setAttribute("aria-current", "page");
+    else link.removeAttribute("aria-current");
+  }
+  // Keep the advice list in step with the tab: schemes vs. crop work.
+  const wanted = state.view === "schemes" ? "scheme" : state.view === "work" && state.category === "scheme" ? state.lastCropCategory : state.category;
+  if (wanted !== state.category) {
+    state.category = wanted;
+    renderCategories();
+    renderAdvisory();
+  }
+  if (isMobile()) window.scrollTo(0, 0);
+  if (state.view === "ai") chat.scrollTop = chat.scrollHeight;
+}
+
+// Screens live in the URL hash so the phone's back button returns to the previous one.
+function goTo(view) {
+  if (location.hash === `#${view}`) showView(view);
+  else location.hash = view;
+}
+window.addEventListener("hashchange", () => showView(location.hash.slice(1)));
 
 function renderAdvisory() {
   const k = state.knowledge;
@@ -432,7 +488,7 @@ function renderAdvisory() {
       const b = el("button", { type: "button", role: "tab", textContent: `${emoji} ${t().categories[id]}` });
       b.dataset.cat = id;
       b.setAttribute("aria-selected", String(state.category === id));
-      b.addEventListener("click", () => selectCategory(id, false));
+      b.addEventListener("click", () => selectCategory(id));
       return b;
     }),
   );
@@ -558,14 +614,16 @@ function fillCropOptions() {
   $("crop-options").replaceChildren(...meta.crops[state.lang].map((c) => el("option", { value: c })));
 }
 
-$("crop-plan-btn").addEventListener("click", () => {
+function openPlanDialog() {
   planForm.elements.category.value = ["fruit", "flower", "vegetable", "spice", "forestry"].includes(state.category) ? state.category : "vegetable";
   planForm.elements.crop.value = "";
   planForm.elements.date.value = state.selected;
   fillCropOptions();
   planDialog.showModal();
   planForm.elements.crop.focus();
-});
+}
+$("crop-plan-btn").addEventListener("click", openPlanDialog);
+$("fab-plan").addEventListener("click", openPlanDialog);
 planForm.elements.category.addEventListener("change", fillCropOptions);
 $("cancel-plan").addEventListener("click", () => planDialog.close());
 planForm.addEventListener("submit", (e) => {
@@ -650,7 +708,7 @@ async function sendMessage(message) {
   addMessage("user", message);
   const pending = addMessage("bot pending", t().thinking);
   button.disabled = input.disabled = true;
-  if (window.matchMedia("(max-width: 1000px)").matches) document.querySelector(".assistant-panel").scrollIntoView({ behavior: "smooth" });
+  if (isMobile()) goTo("ai");
 
   try {
     const result = await api("/api/assistant", {
@@ -734,15 +792,72 @@ if (SpeechRecognition) {
   });
 }
 
+// ---------- Swipe between months on touch screens ----------
+
+let touchStart = null;
+$("grid").addEventListener("touchstart", (e) => {
+  touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+}, { passive: true });
+$("grid").addEventListener("touchend", (e) => {
+  if (!touchStart) return;
+  const dx = e.changedTouches[0].clientX - touchStart.x;
+  const dy = e.changedTouches[0].clientY - touchStart.y;
+  touchStart = null;
+  if (Math.abs(dx) > 60 && Math.abs(dy) < 50) shiftMonth(dx < 0 ? 1 : -1);
+});
+
+// ---------- Installable app (PWA) ----------
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(() => {}));
+}
+
+const installBtn = $("install-btn");
+const isStandalone = () => window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+// iPhone/iPad Safari has no install prompt; we show the "Add to Home Screen" steps instead.
+const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+let installPrompt = null;
+
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  installPrompt = e;
+  installBtn.hidden = false;
+});
+window.addEventListener("appinstalled", () => {
+  installPrompt = null;
+  installBtn.hidden = true;
+});
+if (isIos && !isStandalone()) installBtn.hidden = false;
+
+installBtn.addEventListener("click", async () => {
+  if (installPrompt) {
+    installPrompt.prompt();
+    const { outcome } = await installPrompt.userChoice;
+    if (outcome === "accepted") installBtn.hidden = true;
+    installPrompt = null;
+  } else if (isIos) {
+    $("ios-install-dialog").showModal();
+  }
+});
+
+function updateOnline() {
+  $("offline-banner").hidden = navigator.onLine;
+}
+window.addEventListener("online", updateOnline);
+window.addEventListener("offline", updateOnline);
+
 // ---------- Start ----------
 
 (async () => {
   renderStatic();
+  updateOnline();
+  showView(location.hash.slice(1));
   addMessage("bot", t().welcome);
   try {
     state.knowledge = await api("/api/knowledge");
     await refresh();
   } catch (err) {
     addMessage("error", `${t().loadError}: ${err.message}`);
+    render();
   }
 })();
