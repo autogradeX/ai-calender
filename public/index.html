@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Calendar</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <main class="calendar">
+      <header class="toolbar">
+        <h1 id="month-label"></h1>
+        <div class="toolbar-actions">
+          <button class="btn ghost" id="prev" aria-label="Previous month">&#8249;</button>
+          <button class="btn ghost" id="today">Today</button>
+          <button class="btn ghost" id="next" aria-label="Next month">&#8250;</button>
+          <button class="btn primary" id="new-event">+ New event</button>
+        </div>
+      </header>
+      <div class="weekdays" id="weekdays"></div>
+      <div class="grid" id="grid"></div>
+    </main>
+
+    <aside class="sidebar">
+      <section class="day-panel">
+        <h2 id="day-label"></h2>
+        <ul class="agenda" id="agenda"></ul>
+      </section>
+
+      <section class="assistant-panel">
+        <h2>Assistant</h2>
+        <div class="chat" id="chat" aria-live="polite">
+          <div class="msg assistant">Hi! Tell me what to schedule, move, or cancel, or ask about your week. Try “Lunch with Sam next Thursday at noon” or “What's on tomorrow?”</div>
+        </div>
+        <form class="chat-form" id="chat-form">
+          <input id="chat-input" type="text" placeholder="Ask or schedule something…" autocomplete="off" required>
+          <button class="btn primary" type="submit">Send</button>
+        </form>
+      </section>
+    </aside>
+  </div>
+
+  <dialog id="event-dialog">
+    <form method="dialog" id="event-form">
+      <h2 id="dialog-title">New event</h2>
+      <label>Title <input name="title" required></label>
+      <label class="inline"><input type="checkbox" name="allDay"> All day</label>
+      <div class="row">
+        <label>Start <input name="start" type="datetime-local" required></label>
+        <label>End <input name="end" type="datetime-local" required></label>
+      </div>
+      <label>Location <input name="location"></label>
+      <label>Notes <textarea name="notes" rows="3"></textarea></label>
+      <label>Color
+        <select name="color">
+          <option value="blue">Blue</option>
+          <option value="green">Green</option>
+          <option value="purple">Purple</option>
+          <option value="orange">Orange</option>
+          <option value="red">Red</option>
+        </select>
+      </label>
+      <p class="form-error" id="form-error" hidden></p>
+      <div class="dialog-actions">
+        <button class="btn danger" type="button" id="delete-event" hidden>Delete</button>
+        <span class="spacer"></span>
+        <button class="btn ghost" type="button" id="cancel-event">Cancel</button>
+        <button class="btn primary" type="submit">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
